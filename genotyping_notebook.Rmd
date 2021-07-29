@@ -1,0 +1,35 @@
+---
+title: "South Fork Crooked River 2021 Genotyping"
+output:
+  html_document:
+    df_print: paged
+    code_folding: hide
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+---
+
+```{r, message=FALSE, warning=FALSE}
+require(tidyverse)
+require(DiagrammeR)
+require(poppr)
+require(genepop)
+require(graph4lg)
+require(related)
+require(adegenet)
+require(knitr)
+require(magrittr)
+```
+
+# Readme
+
+This is document is an R notebook. If you'd like view to pre-rendered figures, read a summary of analysis and interact with code, please open the relevant html file in a browser. 
+
+To conduct a similar analyses on your computer, edit or run code: clone this repository into a directory on your local machine and open the .Rproj file in Rstudio.
+
+# Rationale
+
+No idea yet
+
+# Data Summary
+
