@@ -29,7 +29,17 @@ To conduct a similar analyses on your computer, edit or run code: clone this rep
 
 # Rationale
 
-No idea yet
+This is the genotyping log for the 2021 South Fork Crooked River O. mykiss project
 
 # Data Summary
+## Sequence Data
+
+- SFGL Run Number 019
+- Gtseq Data using the SFGL Omy392 panel:  
+- Raw data from UofO sequencing center is located at "/dfs/Omalley_Lab/fitz/Runs/4773"  
+- Arrived demultiplexed, lane also contains albacore data from the Tal317 test  
+
+- Controls and Omy data copied to dayan directory for project: "/dfs/Omalley_Lab/dayan/small_omy_projects/crooked_river_2021/raw_reads"  
+
+
 
