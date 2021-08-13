@@ -1,0 +1,1509 @@
+---
+title: "South Fork Crooked River 2021 Analysis"
+output:
+  html_document:
+    df_print: paged
+    code_folding: hide
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+---
+
+```{r, message=FALSE, warning=FALSE}
+require(rubias)
+require(adegenet)
+require(knitr)
+require(tidyverse)
+require(magrittr)
+```
+
+# Readme
+
+This is document is an R notebook. If you'd like view to pre-rendered figures, read a summary of analysis and interact with code, please open the relevant html file in a browser. 
+
+To conduct a similar analyses on your computer, edit or run code: clone this repository into a directory on your local machine and open the .Rproj file in Rstudio.
+
+The entire project is version controled stored as an R project on github at https://github.com/david-dayan/sf_crooked_river_2021 and archived wiht a stable DOI using zenodo at XXXXXXXXXXXXXX
+
+# Rationale
+
+This is the analysis log for the 2021 South Fork Crooked River O. mykiss project. 
+
+The goal is to conduct GSI and assign rainbow trout of unknown origin in the South Frok of the Crooked River and its tributary Twelvemile Creek to a nearby native stock (Paulina Creek), or to a possible hatchery stock provided as a baseline from USFWS. 
+
+_History of SF Crooked O. mykiss_ __(need this confirmed by regional folks, since the document I have is a bit unclear)__  
+Pre-1981: ?, but presumably native fish  
+1981: Rotenone  
+1981-2012: stocked only with hatchery-raised (Round Butte Hatchery, Deschutes River stock 66), fin-clipped redband trout and possibly steelhead with origins from the upper Crooked River basin or the lower Deschutes River __but this conflicts with later statements!__  
+Early 2000s - 2012: Wild fish from Ochoco NF (where?) were used to create a "locally adapted stock" and stocked in the South Fork Crooked River. Ceased stocking in 2012 after natural reproductin was observed. __what stock # is this "locally adapted stock"? and is it included in the data from Justin Bohling (USFWS)?, alternatively are Paulina Creek included as the native reference because it is near/the same as the population used to create this stock?__  
+2013: Dewatering, all fish presumed killed.  
+2014-: Stocked with Wizard Falls (stock 127)  
+
+# Data
+
+- Sample Data (fin clips from fish sampled in 2019 and 2020), genotyped using the Omy391 panel    
+    - SF Crooked (n = 17), unknown origin  
+    - Twelvemile Creek (n = 41), unknown origin  
+    - Paulina Creek (n = 35), native redband to use as baseline with samples below  
+- Baseline Data
+  - Omy379, samples genotyped using the Omy379 panel   
+      - Cape Cod Hatchery	(n = 10)  
+      - Crane Prairie Reservoir	(n = 1)  
+      - Oak Springs Hatchery (n = 10)  
+      - Round Butte Hatchery (n = 11)  
+      - Wizard Falls Hatchery	(n = 11)  
+  - Omy269, samples genotyped using the Omy269 panel  
+      - Cape Cod Hatchery (stock 53 or 72?)		(n = 45)  
+      - Crane Prairie Reservoir	(n = 0 ) 
+      - Oak Springs Hatchery (stock 66 or 153?) (n = 43)  
+      - Round Butte Hatchery (n = 0)   
+      - Wizard Fall Hatchery (stock 127) (n = 34)  
+
+# Approach
+
+There is incomplete overlap of markers among the three gtseq panels used in this analysis. A pilot analysis of these data suggests that missing data when using a union join (any marker in any panel) and a join using only SFGL markers produced major issues (the principal structure in the data was driven by the panel, and GSI z-scores could not be readily compared due to different missing data rates across reference samples).
+
+An intersect join of data (only markers shared across all three panels)  reduces the available data for analysis and leads to weaker discrimination among populations than estimated using all available data. Another challenge is the that markers in the full intersect dataset ($SFGL\bigcap Omy269\bigcap Omy379$). Had very few of the adaptive genetic markers (10 total labeled simply "adaptive", 0 run timing, 0 residency-anadromy ) that we are most interested in and play a particularly important role in shaping among-population differences. 
+
+An intersect join of the SFGL panel and the Omy379 panel ($SFGL\bigcap Omy269\bigcap Omy379$) had lots of markers, but very few samples in the reference populations.  
+
+The 4 dataset analyzed here are described below. __We consider only the first in the our conclusions.__  
+
+$SFGL\bigcap Omy269\bigcap Omy379$ All markers in all three (intersection) SFGL, Omy269 and Omy379panels  
+$SFGL\bigcap Omy379$ All markers in BOTH (intersection) SFGL and Omy379 panels  
+$SFGL\bigcap Omy269$ All markers in BOTH (intersection) SFGL and Omy269 panels   
+__SFGL Markers__ Keep all markers in the SFGL panel, toss any unique to Omy269 or Omy379  
+
+# $SFGL\bigcap Omy379\bigcap Omy269$
+
+Here we use the intersection of markers in all panels
+
+## PCA 
+
+The first step is PCA, where we take a look at the unconstrained patterns of variation in the data to establish some hypothese to test later on
+
+
+### data setup 
+
+
+```{r, message = FALSE}
+load("genotype_data/genotypes_2.2.R")
+genos_269 <- readxl::read_xlsx("data_from_odfw/Mykiss_GT_genosUSFSW.xlsx", sheet=1)
+genos_379 <- readxl::read_xlsx("data_from_odfw/Mykiss_GT_genosUSFSW.xlsx", sheet=2)
+
+#convert colname formatting to match
+colnames(genos_2.2) <- gsub("\\.", "", colnames(genos_2.2))
+colnames(genos_2.2) <- gsub("-", "", colnames(genos_2.2))
+colnames(genos_2.2) <- gsub("_", "", colnames(genos_2.2))
+genos_2.2 %<>%
+  rename(Population = Stream)
+
+genos_269 %<>%
+  rename_with(~ gsub("_","", .x, fixed = TRUE))
+
+genos_379 %<>%
+  rename_with(~ gsub("_","", .x, fixed = TRUE))
+
+common_cols <- intersect(colnames(genos_2.2), colnames(genos_269))
+common_cols <- intersect(common_cols, colnames(genos_379))
+
+# remove data from reference data that is absent from sample data
+genos_269 %<>%
+  rename(sample = Indidividual) %>%
+  select(sample, common_cols) %>%
+  filter(Population != "CranePrarieReservoir")
+
+genos_379 %<>%
+  rename(sample = Individual) %>%
+  select(sample, common_cols) %>%
+  filter(Population != "CranePrarieReservoir")
+
+genos_3.0 <- genos_2.2 %>%
+  select(sample, common_cols)
+
+
+#combine and tag duplicate indivs
+genos_2.3 <- genos_3.0 %>%
+  bind_rows(genos_269, genos_379, .id = "dataset") %>%
+  group_by(sample) %>%
+  mutate(sample = if(n( ) > 1) {paste0(sample, row_number( ))} 
+                             else {paste0(sample)})
+  
+
+
+#convert to matrix with inds as row names
+genos_2.4 <- as.matrix(genos_2.3[,4:198]) #caution potential hardcoding to exclude sex marker, get rid of the "-1" if you don't have a sex marker
+row.names(genos_2.4) <- genos_2.3$sample
+genind_1.0 <- df2genind(genos_2.4, sep ="", ploidy=2,NA.char = "NA")
+
+genind_1.0@pop <- as.factor(genos_2.3$Population)
+```
+
+
+In a pilot analysis, we discoverd that different levels of missing data across panels can produce a library effect in the apparent genetic structure. Here assess whether there is a library effect remaining after this join (intersect of all three datasets).
+
+```{r, message=FALSE, warning=FALSE}
+# set missing data to mean allele freq (PCA does not accomodate NAs)
+X <- scaleGen(genind_1.0,  NA.method="mean")
+
+
+#then run pca, keep all PCs
+pca1 <- dudi.pca(X, scale = FALSE, scannf = FALSE, nf = 227)
+
+### check pcs to keep with kaiser-guttman and broken stick
+
+# #kaiser guttman
+# cutoff<-mean(pca1$eig)
+# kg <- length((pca1$eig)[(pca1$eig)>cutoff])
+# barplot(pca1$eig, main = "PCA eigenvalues\nKaiser-Guttman Criteria (red line)")
+# abline(h = cutoff, col = "red")
+# 
+# #broken stick
+# n <- length(pca1$eig)
+# bsm <- data.frame(j=seq(1:n), p = 0)
+# bsm$p[1] <- 1/n
+# for (i in 2:n){
+#   bsm$p[i] <- bsm$p[i-1]+(1/(n+1-i))
+#   
+# }
+# bsm$p <- 100*bsm$p/n
+# 
+# pca_eigs_to_plot <- as.data.frame(cbind(100*pca1$eig/sum(pca1$eig)), rev(bsm$p))
+# pca_eigs_to_plot %<>%
+#   rownames_to_column(var = "bsm") %>%
+#   rename(pca_eig_perc = V1) %>%
+#   mutate(pca_eig_perc = as.numeric(pca_eig_perc))
+# 
+# pca_eigs_to_plot %<>%
+#   rowid_to_column("row_n") %>%
+#   mutate(bsm = as.numeric(bsm)) %>%
+#   pivot_longer(!row_n, names_to = "bsm_or_eig", values_to = "percent_variance")
+# 
+# ggplot(data = pca_eigs_to_plot[1:71,])+geom_bar(aes(x = as.factor(row_n), y = percent_variance, color = bsm_or_eig, fill = bsm_or_eig), stat = "identity", position=position_dodge())+theme_classic()+xlab("Eigenvector")+ylab("percent of variance")+ggtitle("Broken Stick Model")
+
+```
+
+First let's check if the panel used to genotype continues to the structure the data within populations where both panels were used. 
+
+
+```{r, warning = FALSE, message=FALSE}
+
+#kept all PCs
+snp_pcs <- pca1$li#[,c(1:kg)]
+
+#now plot data
+snp_pcs %<>%
+  rownames_to_column("sample") %>%
+  left_join(select(genos_2.3, sample, Population, dataset), by = c("sample" = "sample")) %>%
+  mutate(dataset = case_when(dataset == 1 ~ "SFGL_genotyped",
+                             dataset == 2 ~ "USFS_Omy269",
+                             dataset == 3 ~ "USFS_Omy379"))
+
+ggplot(data = filter(snp_pcs, Population %in% c( "WizardFallsHatchery", "OakSpringsHatchery", "CapeCodHatcheryStrain")))+geom_point(aes(Axis1, Axis2, color = Population, shape = dataset), alpha = 0.7) + stat_ellipse(aes(Axis1, Axis2, color = Population)) +theme_classic()+scale_color_viridis_d()
+
+```
+
+No, now that we have only used the intersection of markers between the panels, there is no structure by dataset remaining in the samples that were genotyped across multiple panels.
+
+__PCA Prep__
+
+```{r}
+#now lets remove those duplicates
+
+#combine and REMOVE duplicate indivs
+genos_2.3 <- genos_3.0 %>%
+  bind_rows(genos_269, genos_379, .id = "dataset") %>%
+  arrange(rowSums(is.na(.))) %>%
+  distinct(sample, .keep_all = TRUE)
+
+
+#convert to matrix with inds as row names
+genos_2.4 <- as.matrix(genos_2.3[,4:198]) #caution potential hardcoding to exclude sex marker, get rid of the "-1" if you don't have a sex marker
+row.names(genos_2.4) <- genos_2.3$sample
+genind_1.0 <- df2genind(genos_2.4, sep ="", ploidy=2,NA.char = "NA")
+
+genind_1.0@pop <- as.factor(genos_2.3$Population)
+```
+
+```{r, message=FALSE, warning=FALSE}
+# set missing data to mean allele freq (PCA does not accomodate NAs)
+X <- scaleGen(genind_1.0,  NA.method="mean")
+
+
+#then run pca, keep all PCs
+pca1 <- dudi.pca(X, scale = FALSE, scannf = FALSE, nf = 227)
+
+### check pcs to keep with kaiser-guttman and broken stick
+
+#kaiser guttman
+cutoff<-mean(pca1$eig)
+kg <- length((pca1$eig)[(pca1$eig)>cutoff])
+barplot(pca1$eig, main = "PCA eigenvalues\nKaiser-Guttman Criteria (red line)")
+abline(h = cutoff, col = "red")
+
+#broken stick
+n <- length(pca1$eig)
+bsm <- data.frame(j=seq(1:n), p = 0)
+bsm$p[1] <- 1/n
+for (i in 2:n){
+  bsm$p[i] <- bsm$p[i-1]+(1/(n+1-i))
+
+}
+bsm$p <- 100*bsm$p/n
+
+pca_eigs_to_plot <- as.data.frame(cbind(100*pca1$eig/sum(pca1$eig)), rev(bsm$p))
+pca_eigs_to_plot %<>%
+  rownames_to_column(var = "bsm") %>%
+  rename(pca_eig_perc = V1) %>%
+  mutate(pca_eig_perc = as.numeric(pca_eig_perc))
+
+pca_eigs_to_plot %<>%
+  rowid_to_column("row_n") %>%
+  mutate(bsm = as.numeric(bsm)) %>%
+  pivot_longer(!row_n, names_to = "bsm_or_eig", values_to = "percent_variance")
+
+ggplot(data = pca_eigs_to_plot[1:71,])+geom_bar(aes(x = as.factor(row_n), y = percent_variance, color = bsm_or_eig, fill = bsm_or_eig), stat = "identity", position=position_dodge())+theme_classic()+xlab("Eigenvector")+ylab("percent of variance")+ggtitle("Broken Stick Model")
+
+```
+
+Kaiser Guttman suggests 64 PCs are informative, broken stick suggests just 6.
+
+### Results
+
+```{r}
+#kept all PCs
+snp_pcs <- pca1$li#[,c(1:kg)]
+
+#now plot data
+snp_pcs %<>%
+  rownames_to_column("sample") %>%
+  left_join(select(genos_2.3, sample, Population, dataset), by = c("sample" = "sample")) %>%
+  mutate(dataset = case_when(dataset == 1 ~ "SFGL_genotyped",
+                             dataset == 2 ~ "USFS_Omy269",
+                             dataset == 3 ~ "USFS_Omy379"))
+
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis1, Axis2, color = Population), alpha = 0.7) + stat_ellipse(aes(Axis1, Axis2, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis3, Axis4, color = Population), alpha = 0.7) + stat_ellipse(aes(Axis3, Axis4, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis5, Axis6, color = Population), alpha = 0.7) + stat_ellipse(aes(Axis5, Axis6, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis7, Axis8, color = Population), alpha = 0.7) + stat_ellipse(aes(Axis7, Axis8, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+#3d plot as well
+plotly::plot_ly(x=snp_pcs$Axis1, y=snp_pcs$Axis2, z=snp_pcs$Axis3, type="scatter3d", mode="markers", color=snp_pcs$Population, alpha = 0.8)
+```
+
+As suggested by the broken stick model the first 6 axes capture interesting patterns in the data.
+
+SF Crooked samples cluster with Wizard Falls fish across all informative PCs. Twelvemile Creek cluster together and fall in an intermediate position between Wizard Falls + South Fork samples along the first two axes, but intermediate between Paulina and Wizard Falls, but fail to maintain this position in subsequent PCs. In these PCs Twelvemile creek always demonstrate some overlap with Wizard Falls + South Fork, but also demonstrate variation along a different axis than that between Wizard Falls+South Fork - Paulina. 
+
+These subsequent PCs complicate a simple interpretation that Twelvemile Creek are a population composed of native stock experiencing admixture between a Paulina-like ancestor and the hatchery derived individuals in the South Fork. There is genetic variation that suggest that some of the differentiation between Twelvemile Creek Fish and WizardFalls+SouthFork is separate from the differentation between Paulina Creek and WizardFalls+SouthFork samples. This suggests that Paulina Creek may be similar to Twelvemile creeks samples, but there is an additional aspect of genetic variation that makes twelvemile creek fish unique. This fits with the idea that Paulina represents a close fit to native twelvemile creek redband, but twelvemile creek fish are not directly descended form Paulina, instead they share a more recent common ancestor than Twelvemile and WizardFalls+mainstem SF Crooked. This also suggests we'll have some issues with GSI, as Paulina may be a poor stand in for the true source population for Twelvemile Creek Samples
+
+## Hypotheses
+
+My best guess as to what is going on here is that the local BLM biologist was right; we're looking at native fish on the Twelvemile with some admixture between these fish and the hatchery derived, but naturally reproducing population on the mainstem. Some further ways to test this assumption is using structure to estimate ancestry proportions for each individual and DAPC. 
+
+Specifically, we can develop the following expectations from GSI, STRUCTURE and DAPC from this hypothesis developed from the exploratory data analyses above (PCA)
+
+Structure: Wizard Falls and Mainstem SF Crooked samples have 1 genetic cluster that composes the majority of their inferred ancestry, Paulina a second, and Twelve mile creek will individuals will have consistent mixed admixture between these two clusters. At high enough k, we will be able to tell the difference between Paulina and Twelvemile and Twlevemile will have its own major cluster.
+
+DAPC: One DAPC axis among de novo genetic clusters will separate wizard falls + mainstem SF crooked from paulina, with twelvemile intermediate,  
+a second DAPC axis will separate Twelvemile creek from all other,  
+other DA axes will peel off different hatchery strains in the reference dataset (perhaps we should cut round butte and cape cod out, since no analysis so far has suggested they play a role )
+
+GSI: Rubias will assign all South Fork samples to Wizard Falls, and will struggle to assign Twelvemile samples. Twelvemile samples will either be assigned to Paulina with low confidence, or to both Wizard Falls and Paulina, also wiht low confidence.
+
+## Rubias  
+
+Our first attempt at assignment will use Rubias GSI against baselines from Cape Cod, Oak Springs, Round Butte, and Wizard Falls hatcheries as well as Paulina Creek. We will not attempt assignment to Crane Prairie because there is only a single sample.
+
+### Reformat Data
+
+The first step is to combine availbale information from possible source and sample populations into a single dataframe with the correct format. 
+```{r, message=FALSE, warning = FALSE}
+
+
+baseline_269 <- read_tsv("genotype_data/baseline_269.txt")
+baseline_269 %<>%
+  mutate(across(everything(), as.character)) %>%
+  rename_with( ~ gsub("_", "", .x, fixed = TRUE))
+
+baseline_379 <- read_tsv("genotype_data/baseline_379.txt")
+baseline_379 %<>%
+  mutate(across(everything(), as.character)) %>%
+  rename_with( ~ gsub("_", "", .x, fixed = TRUE))
+
+load("genotype_data/genind_2.0.R")
+
+baseline_paulina <- read_tsv("genotype_data/paulina.txt")
+baseline_paulina %<>%
+  mutate(across(everything(), as.character)) %>%
+  rename_with( ~ gsub("_", "", .x, fixed = TRUE))
+
+samples_GSI <- read_tsv("genotype_data/sample_genos.txt")
+samples_GSI %<>%
+  mutate(across(everything(), as.character)) %>%
+  rename_with( ~ gsub("_", "", .x, fixed = TRUE))
+
+#combine all of these into a single dataframe
+#note that some individuals between the two baseline datasets are repeated, we retained the row with the higher number of genotypes
+
+#here we keep only markers in all three datasets
+
+common_cols <- intersect((colnames(samples_GSI)), (colnames(baseline_269)))
+common_cols <- intersect((common_cols), colnames(baseline_379)) 
+  
+GSI_reference <- bind_rows( samples_GSI, baseline_269, baseline_379, baseline_paulina)%>%
+  arrange(rowSums(is.na(.))) %>%
+  distinct(indiv, .keep_all = TRUE) %>%
+  filter(repunit != "CranePrarieReservoir") %>%
+  select(common_cols) %>%
+  rename(sample_type = sampletype) %>%
+  filter(sample_type != "mixture")
+
+samples_GSI %<>%
+  select(common_cols) %>%
+  rename(sample_type = sampletype)
+
+```
+
+The combined dataset has 195 common markers.
+
+### Power/Accuracy Simulation
+
+Next we run some simulations using the reference dataset to asses the accuracy and power of the baseline to correctly assign the halfpounders.
+
+#### Reference Self-Assignment
+
+First we attempt self-assignment of reference samples to their reporting group using a leave-one-out approach.
+
+```{r, message=FALSE, warning = FALSE}
+sa <- self_assign(reference = GSI_reference, gen_start_col = 5)
+
+#summarise by reporting unit
+sa_to_repu <- sa %>%
+  group_by(indiv, collection, repunit, inferred_repunit) %>%
+  summarise(repu_scaled_like = sum(scaled_likelihood))
+
+# for each individual, assign to most likely reporting unit
+sa_assign <- sa_to_repu %>%
+  group_by(indiv) %>%
+  slice_max(repu_scaled_like)
+
+sa_assign$correct_assignment <- sa_assign$repunit == sa_assign$inferred_repunit
+
+sum(sa_assign$correct_assignment/nrow(sa_assign))
+```
+
+Self-assignment assigns (maximum scaled likelihood) reference individuals back to correct reporting unit 98.8% of time.
+
+
+#### Simulated Mixture
+
+While we can successfully assign reference individuals back to the correct reporting unit, what about a simulated mixture? 
+
+ let's assume our sample indivs are equally represented across the reporting units.
+
+Here we conduct a 500 simulations of a mixture of 200 samples drawn at equal rates from the reporting units.
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+ref_sims_no_prior <- assess_reference_loo(reference = GSI_reference, 
+                     gen_start_col = 5, 
+                     reps = 500, 
+                     mixsize = 200,
+                     )
+
+tmp <- ref_sims_no_prior %>%
+  group_by(iter, repunit) %>%
+  summarise(true_repprop = sum(true_pi), 
+            reprop_posterior_mean = sum(post_mean_pi),
+            repu_n = sum(n)) %>%
+  mutate(repu_n_prop = repu_n / sum(repu_n))
+
+ggplot(tmp, aes(x = true_repprop, y = reprop_posterior_mean, colour = repunit)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  facet_wrap(~ repunit)
+```
+
+Using equal priors acorss the two reporting units the true vs inferred mixture proportions (above) show very small residuals.
+
+Now let's check how reliable an individual assignment (posterior probability) is from these simulations.
+
+```{r, message=FALSE, warning=FALSE}
+ref_sims_no_prior_indivs <- assess_reference_loo(reference = GSI_reference, 
+                     gen_start_col = 5, 
+                     reps = 500, 
+                     mixsize = 200,
+                     return_indiv_posteriors = TRUE)
+
+# summarise things
+repu_pofzs <- ref_sims_no_prior_indivs$indiv_posteriors %>%
+  filter(repunit == simulated_repunit) %>%
+  group_by(iter, indiv, simulated_collection, repunit) %>%  # first aggregate over reporting units
+  summarise(repu_PofZ = sum(PofZ)) %>%
+  ungroup() %>%
+  arrange(repunit, simulated_collection) %>%
+  mutate(simulated_collection = factor(simulated_collection, levels = unique(simulated_collection)))
+#> `summarise()` regrouping output by 'iter', 'indiv', 'simulated_collection' (override with `.groups` argument)
+
+# also get the number of simulated individuals from each collection
+num_simmed <- ref_sims_no_prior_indivs$indiv_posteriors %>%
+  group_by(iter, indiv) %>%
+  slice(1) %>%
+  ungroup() %>%
+  count(simulated_collection)
+  
+# note, the last few steps make simulated collection a factor so that collections within
+# the same repunit are grouped together in the plot.
+
+# now, plot it
+ggplot(repu_pofzs, aes(x = simulated_collection, y = repu_PofZ)) +
+  geom_boxplot(aes(colour = repunit)) +
+  geom_text(data = num_simmed, mapping = aes(y = 1.025, label = n), angle = 90, hjust = 0, vjust = 0.5, size = 3) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 9, vjust = 0.5)) +
+  ylim(c(0, 1.25))
+
+#make a table
+kable(repu_pofzs %>%
+  group_by(simulated_collection) %>%
+  summarize(mean_prob = mean(repu_PofZ)))
+```
+
+Near perfect assignment (99.2% overall mean) to reporting unit within each collection from simulations. Lowest probability of correct assignment to CapeCod.
+
+Between this result and reference self-assignment using leave-one-out, we can be highly confident the GSI will be accurate so long as the correct source populations are included in the reference dataset.
+
+### GSI
+
+Let's do the GSI. Below we use rubias GSI to conduct three related analyses:  
+(1) Estimate the overall proportion (mixture propotion) from each baseline group 
+(2) Check for samples that are not from ANY of the reference populations   
+(3) conduct individual assignments  
+
+#### Mixture Proportions
+
+What proportion of the samples are from each of the reporting units (i.e. baseline pops). Error estimates reported below are 95% credible intervals.
+
+
+```{r, message = FALSE, warning = FALSE}
+samples_GSI %<>%
+  mutate(repunit = NA) 
+  
+mix_est <- infer_mixture(reference = GSI_reference, mixture = samples_GSI, gen_start_col = 5 )
+
+
+kable(mix_est$mixing_proportions %>%
+  select(mixture_collection, repunit, pi))
+
+#plot the posterior densitites of the mixing proportions (discarding the first 200 sweeps as a burn in)
+trace_subset_twelvemile <- mix_est$mix_prop_traces %>%
+  filter(mixture_collection == "TwelvemileCreek", sweep > 200) %>%
+  group_by(sweep, repunit) %>%
+  summarise(repprop = sum(pi))
+
+ggplot(trace_subset_twelvemile, aes(x = repprop, colour = repunit)) +
+  geom_density()+theme_classic()+ggtitle("Twelvemile Creek")
+
+#next get some number out of this plot, estimate 95% credible intervals for the mixing proportions
+cis_twelve <- trace_subset_twelvemile %>%
+  group_by(repunit) %>%
+  summarise(loCI = quantile(repprop, probs = 0.025),
+            hiCI = quantile(repprop, probs = 0.975))
+
+cis_twelve
+
+#now for south fork
+trace_subset_SF <- mix_est$mix_prop_traces %>%
+  filter(mixture_collection == "SouthForkCrookedRiver", sweep > 200) %>%
+  group_by(sweep, repunit) %>%
+  summarise(repprop = sum(pi))
+
+ggplot(trace_subset_SF, aes(x = repprop, colour = repunit)) +
+  geom_density()+theme_classic()+ggtitle("South Fork")
+
+#next get some number out of this plot, estimate 95% credible intervals for the mixing proportions
+cis_twelve <- trace_subset_SF %>%
+  group_by(repunit) %>%
+  summarise(loCI = quantile(repprop, probs = 0.025),
+            hiCI = quantile(repprop, probs = 0.975))
+
+cis_twelve
+```
+
+The mixture proportion results vary between Twelvemile Creek and South Fork Crook River samples. 
+
+SFCR: 96% (83 - 100%) Wizard Falls  
+Twelvemile: 83% (69 - 81%) Wizard Falls, 15% (5-29%) Paulina Creek
+
+Note that this is the overall mixture rate. It does not tell us the status of individuals
+
+#### Other system
+
+Here we check the z scores to see if any of the individual assignment are very weak, indicating that a sample may be derived from a region/stock other than those in our reference dataset
+
+```{r, message = FALSE, warning=FALSE}
+map_rows <- mix_est$indiv_posteriors %>%
+  group_by(indiv) %>%
+  top_n(1, PofZ) %>%
+  ungroup()
+
+normo <- tibble(z_score = rnorm(1e06))
+ggplot(map_rows ) +
+  geom_density(aes(x = z_score) , color = "blue")+
+  geom_density(data = normo, aes(x = z_score),colour = "black")
+```
+
+Z-score distribution is NOT NORMAL. Suggests that the true source population is not included in the dataset. 
+One possible explanation for this observation is that the Paulina creek samples are a poor stand-in for the native redbands on twelvemile. If this is the case then we expect the z-score distrbution to be normal for SF and non-normal for twelve mile. Lets check.
+
+```{r, message=FALSE, warning=FALSE}
+map_rows <- mix_est$indiv_posteriors %>%
+  group_by(indiv, mixture_collection) %>%
+  top_n(1, PofZ) %>%
+  ungroup()
+
+ggplot(map_rows) +
+  geom_density(aes(x = z_score, color = mixture_collection)) +
+  geom_density(data = normo,aes(x = z_score), colour = "black")
+```
+
+Yep, the issue is that there is not a great fit for twelvemile creek samples, but SF samples are a better fit to their assignments
+
+
+__There is no good source population for Twelvemile Creek assignment. So we have low confidence in GSI for this population__
+
+#### Individuals Assignments
+
+Next we take examine the individual posteriors. We will sum the posteriour probabilities within a reporting unit for each individual, then choose the most likely reporting unit as that with highest probability.
+
+```{r, message=FALSE, warning=FALSE}
+#aggregate
+repu_pofzs_assn <- mix_est$indiv_posteriors %>%
+  group_by(indiv, repunit, mixture_collection) %>%  # first aggregate over reporting units
+  summarise(repu_PofZ = sum(PofZ)) %>%
+  ungroup() %>%
+  group_by(indiv) %>%
+  slice_max(repu_PofZ)
+
+ggplot(data = filter(repu_pofzs_assn, mixture_collection == "TwelvemileCreek"))+geom_histogram(aes(repu_PofZ, color = repunit))+ggtitle("Twelvemile")
+
+ggplot(data = filter(repu_pofzs_assn, mixture_collection == "SouthForkCrookedRiver"))+geom_histogram(aes(repu_PofZ, color = repunit))+ggtitle("South Fork Crooked")
+```
+
+Individual assignment in SF crooked is always 100% Wizard Falls. 
+In Twelvemile, mostly have high likelihood for one or the other. This suggest a mixture of individuals of different descent, not extensive admixture between these two groups. However, rubias is not the most appropriate tool to make this assessment. Also Twelvemile samples have more samples with lower assignment probabilities, suggesting, again something is not working perfectly with these samples.
+
+## Summary
+
+We are able to successfully reassign reference individuals back to their source populations in tests using both leave-one-out and simulated mixture approaches. This suggests the reference dataset has sufficient power to make assignments if the samples are derived from these populations. 
+
+However, the distribution of z-scores of the best assignment for each fish was not normally distributed for Twelvemile creek samples, suggesting that the individuals are derived from a population not included in our reference dataset. We will explore this possibility further using other approaches (below)
+
+
+
+## DAPC
+
+### de novo 
+In de novo DAPC we'll attempt to build linear combinations of alleles that separate individuals that fall into de novo determined genetic clusters, then we will use these constrained ordination results to examine our hypotheses about the origin of Twelvemile Creek and South Fork samples.
+
+__de novo clusters__  
+First let's cluster the individuals using k-means.
+```{r, message=FALSE, warning=FALSE, cache=TRUE, fig.cap="BIC for k-means clustering across different numbers of genetic clusters"}
+#k means clustering, keep a lot (226 pcs) (kmeans won't overfit with two many pcs)
+#note the number of clusters was chosen interactively, the code below executes the clustering using the best k
+
+clusts <- find.clusters(genind_1.0, n.pca = 226, choose.n.clust = FALSE)
+
+#plot BIC
+bic <- as.data.frame(cbind(c(1:length(clusts$Kstat)), clusts$Kstat))
+ggplot(bic)+geom_point(aes(x=V1, y=V2))+geom_line(aes(x=V1, y=V2))+theme_classic()+xlim(c(0,24))+xlab("k")+ylab("BIC")
+
+clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 2)
+kable(table(pop(genind_1.0), clusts$grp),caption = "a priori population vs genetic cluster" )
+clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 3)
+kable(table(pop(genind_1.0), clusts$grp),caption = "a priori population vs genetic cluster" ) 
+clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 4)
+kable(table(pop(genind_1.0), clusts$grp), caption = "a priori population vs genetic cluster" )
+clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 5)
+kable(table(pop(genind_1.0), clusts$grp), caption = "a priori population vs genetic cluster" )
+clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 6)
+kable(table(pop(genind_1.0), clusts$grp), caption = "a priori population vs genetic cluster" )
+clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 7)
+kable(table(pop(genind_1.0), clusts$grp), caption = "a priori population vs genetic cluster" )
+```
+
+BIC suggests k = 6 is the most informative number of clusters. At k=6 CapeCod, OakSprings and RoundButte all form their own genetic clusters. The three remaining clusters fit with earlier findings using rubias and pca.
+
+Cluster 1: All wizard falls fish, and most South Fork Samples
+Cluster 2: All Paulina Samples and 1 Twelvemile
+Cluster 3: All but 1 Twelvemile samples and 3 South Fork samples. 
+
+Next we'll fit DAPC on our data to attempt to discriminate among these 6 clusters.
+
+```{r, message=FALSE, warning=FALSE}
+clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 6)
+#first optimize the PCs retained based on the cross validation, so run dapc on the full pcs
+#invisible(dapc_full_denovo <- dapc(genind_2.1, clusts$grp, n.pca = 330, n.da = 5 ))
+
+#mat <- as.matrix(scaleGen(genind_1.0, NA.method="mean", scale=FALSE, center=FALSE))
+#xpop <- clusts$grp
+#xval <- xvalDapc(mat, xpop, n.pca.max = 200, training.set = 0.9, result = "overall", center = TRUE, scale = FALSE, n.pca = seq(1,30, length.out = 60), n.rep = 50, xval.plot = TRUE)
+
+
+dapc_full_denovo <- dapc(genind_1.0, clusts$grp, n.pca =22, n.da = 5 )
+
+plot_data <- as.data.frame(cbind(dapc_full_denovo$ind.coord, genind_1.0$pop, clusts$grp))
+colnames(plot_data) <- c("LD1", "LD2", "LD3","LD4","LD5", "pop", "grp")
+plot_data$pop <- as.factor(plot_data$pop)
+plot_data$grp <- as.factor(plot_data$grp)
+
+ggplot(data=plot_data)+geom_point(aes(x=LD1, y=LD2, color=pop))+theme_classic()+ggtitle("DAPC by k-means cluster, color by a priori population")+stat_ellipse(aes(x=LD1, y=LD2, color=pop)) +scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ), labels = c("CapeCodHatcheryStrain", "OakSpringsHatchery", "Paulina Creek", "RoundButteHatchery", "South Fork Crooked River", "Twelvemile Creek", "WizardFallsHatchery"))
+
+ggplot(data=plot_data)+geom_point(aes(x=LD3, y=LD4, color=pop))+theme_classic()+ggtitle("DAPC by k-means cluster, color by a priori population")+stat_ellipse(aes(x=LD3, y=LD4, color=pop))+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ), labels = c("CapeCodHatcheryStrain", "OakSpringsHatchery", "Paulina Creek", "RoundButteHatchery", "South Fork Crooked River", "Twelvemile Creek", "WizardFallsHatchery"))
+
+ggplot(data=plot_data)+geom_point(aes(x=LD1, y=LD5, color=pop))+theme_classic()+ggtitle("DAPC by k-means cluster, color by a priori population")+stat_ellipse(aes(x=LD1, y=LD5, color=pop))+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ), labels = c("CapeCodHatcheryStrain", "OakSpringsHatchery", "Paulina Creek", "RoundButteHatchery", "South Fork Crooked River", "Twelvemile Creek", "WizardFallsHatchery"))
+
+ggplot(data=plot_data)+geom_point(aes(x=LD1, y=LD2, color=grp))+scale_color_viridis_d()+theme_classic()+ggtitle("DAPC by cluster, color by k-means cluster")+guides(color=guide_legend("K-means cluster")) 
+
+ggplot(data=plot_data)+geom_point(aes(x=LD3, y=LD4, color=grp))+scale_color_viridis_d()+theme_classic()+ggtitle("DAPC by cluster, color by k-means cluster")+guides(color=guide_legend("K-means cluster")) 
+
+
+#marker_loadings1 <- loadingplot(dapc_full_denovo$var.contr, axis=1,thres=.005, lab.jitter=1, main = "DA axis 1 loading plot")
+#markers1 <- unique(substr(names(marker_loadings1$var.values),1,nchar(names(marker_loadings1$var.values))-2))
+
+#marker_loadings2 <- loadingplot(dapc_full_denovo$var.contr, axis=2,thres=.02, lab.jitter=1, main = "DA axis 2 loading plot")
+#markers2 <- unique(substr(names(marker_loadings2$var.values),1,nchar(names(marker_loadings2$var.values))-2))
+
+#kable(marker_mapping2 %>%
+#  filter(marker %in% markers1 ) %>%
+#  select(marker, `Presumed Type`), caption = "markers heavily loaded into first discriminant axis")
+
+#kable(marker_mapping2 %>%
+#  filter(marker %in% markers2 ) %>%
+#  select(marker, `Presumed Type`), caption = "markers heavily loaded into second discriminant axis")
+```
+
+Very similar results to the PCA, but slightly higher resolution (makes sense)
+
+Axis 1 and axis 5 separate de novo genetic clusters that seem to suggest that Twelvemile Creek is intermediate between WizardFalls and Paulina Creek at some markers and different from both at others. Some individuals in the South Fork also cluster with Twelvemile Creek along these axes
+
+This is consistent with the idea that Twelvemile Creek are a native population experiencing gene flow from the connected South Fork population, which is composed of naturally reproducing, Wizard Falls Hatchery strain descended individuals.
+
+Another interesting observation, two CapeCop hatchery strain individuals consi
+
+## STRUCTURE
+
+Here we use a bayesian, model based clustering algorithm (STRUCTURE) to infer population structure and estimate admixture proportions of individual samples.
+
+First we need to get our dataset ready for structure: remove linked loci, convert to structure format.
+```{r, cache=TRUE, message=FALSE, warning=FALSE}
+# first lets calculate LD (dartR has a great (fast) ld estimator that works right on genind files, so let's use this)
+ldreport <- dartR::gl.report.ld(dartR::gi2gl(genind_1.0, verbose = 0), name = NULL, save = FALSE, nchunks = 2, ncores = 3, chunkname = NULL, verbose = 0)
+
+```
+
+We'll prune (keep one) the dataset of any locus-pairs with r2 > 0.2, then convert to STRUCTURE format
+```{r, eval=FALSE}
+unlinked_genind <- genind_1.0[loc=-unique(ldreport[ldreport$R2>0.2,]$loc2)]
+rm(ldreport)
+#note just sort of crashed through this with a text editor, not easily logged, but the general idea was transpose the data, split columns (diploid to dual haploid) then convert data to integers
+df <- genind2df(unlinked_genind)
+df <- as.data.frame(t(df))
+write_tsv(df, "genotype_data/all.str.tmp")
+#do stuff here
+# CapeCodHatcheryStrain - 1
+# "OakSpringsHatchery" -2
+# "Paulina Creek" -3
+# "RoundButteHatchery" -4
+# "South Fork Crooked River" -5
+# "Twelvemile Creek" -6
+# "WizardFallsHatchery" -7
+
+df <- read_tsv("genotype_data/all.str.tmp", col_names = FALSE)
+df <- t(df)
+write_tsv(as.data.frame(df), "genotype_data/all.str", col_names = FALSE)
+
+```
+
+Remove 15 linked loci.
+
+Alpha stabilized after ~500 iterations in burnin test using 50k iterations across k=2 to k=8.
+
+Used burnin of 5k, followed by 10k, correlated allele frequency, admixture, and no priors for k = 1-8
+
+__Results__
+
+Best k was 2 according to Evanno method (delta K), but low differentiation and small number of markers this is to be expected. Strong patterns (large differences in mean cluster membership across different a priori populations) exist in the data at all k. We also observed a second minor peak in delta K at k = 6, where BIC of k-means clustering for the data was minimized. So while we examine all values of k, we pay particular attention to k = 6.
+
+Clumpp combined runs at each k were created using clumpak. Clumpp found multiple clusters (solutions) for k = 3(5),4(1),5(1),6(2),7(2),8(5). Because there was no major cluster at k =3 (5 at each of 2 different solutions), we consider each.
+
+```{r, message=FALSE, warning=FALSE}
+# prep results
+#clumpp combined runs at each k were created using clumpak
+
+k2 <- read_tsv("structure/5k10kadmcorr/clumpak/K=2/MajorCluster/CLUMPP.files/ClumppIndFile.output", col_names = FALSE)
+k3 <- read_tsv("structure/5k10kadmcorr/clumpak/K=3/MajorCluster/CLUMPP.files/ClumppIndFile.output", col_names = FALSE)
+k3m <- read_tsv("structure/5k10kadmcorr/clumpak/K=3/MinorCluster1/CLUMPP.files/ClumppIndFile.output", col_names = FALSE)
+k4 <- read_tsv("structure/5k10kadmcorr/clumpak/K=4/MajorCluster/CLUMPP.files/ClumppIndFile.output", col_names = FALSE)
+k5 <- read_tsv("structure/5k10kadmcorr/clumpak/K=5/MajorCluster/CLUMPP.files/ClumppIndFile.output", col_names = FALSE)
+k6 <- read_tsv("structure/5k10kadmcorr/clumpak/K=6/MajorCluster/CLUMPP.files/ClumppIndFile.output", col_names = FALSE)
+k7 <- read_tsv("structure/5k10kadmcorr/clumpak/K=7/MajorCluster/CLUMPP.files/ClumppIndFile.output", col_names = FALSE)
+k8 <- read_tsv("structure/5k10kadmcorr/clumpak/K=8/MajorCluster/CLUMPP.files/ClumppIndFile.output", col_names = FALSE)
+
+
+prep_structure_input <- function(x){x %>%
+  mutate(X1 = str_replace_all(X1, " +", " ")) %>%
+  separate(X1, sep = " ", into = c("id", "id1", "zero", "pop", "colon", "clust1", "clust2", "clust3", "clust4", "clust5", "clust6", "clust7", "clust8")) %>%
+  select(where( ~!all(is.na(.x))), -c(id1, zero, colon)) %>%
+  mutate(pop = case_when(pop == 1 ~ "CapeCodHatcheryStrain",
+                         pop == 2 ~ "OakSpringsHatchery", 
+                         pop == 3 ~ "Paulina Creek",
+                         pop == 4 ~ "RoundButteHatchery",
+                         pop == 5 ~ "South Fork Crooked River",
+                         pop == 6 ~ "Twelvemile Creek",
+                         pop == 7 ~ "WizardFallsHatchery")) %>%
+    mutate(across(starts_with("clust"), as.numeric))
+}
+
+k2 <- prep_structure_input(k2)
+k3 <- prep_structure_input(k3)
+k3m <- prep_structure_input(k3m)
+k4 <- prep_structure_input(k4)
+k5 <- prep_structure_input(k5)
+k6 <- prep_structure_input(k6)
+k7 <- prep_structure_input(k7)
+k8 <- prep_structure_input(k8)
+```
+
+```{r, message=FALSE, warning=FALSE, fig.dim=c(7,14)}
+report_colors <- c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ) # we've been using the Paul Tol "bright" color pallette. It is color-blind safe but not monochrome safe. so not ableist, but creates an archive issue
+
+plot_data <- k2 %>% 
+  gather('cluster', 'prob', clust1:clust2) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+
+a <- ggplot(plot_data, aes(id, prob, fill = cluster)) +
+  geom_col(width=1.0) +
+  facet_grid(~pop, scales = 'free', space = 'free', switch = "x") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expand_scale(add = 1)) +
+  theme(axis.text.y = element_blank(),panel.spacing=unit(0.1, "lines"), axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), legend.position = "none", axis.title.y=element_blank(), strip.background = element_rect(color = "white", fill = "white"), strip.text.x = element_blank()) +
+  scale_fill_manual(values = report_colors[1:2])
+
+plot_data <- k3 %>% 
+  
+  gather('cluster', 'prob', clust1:clust3) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+b <- ggplot(plot_data, aes(id, prob, fill = cluster)) +
+  geom_col(width=1.0) +
+  facet_grid(~pop, scales = 'free', space = 'free', switch = "x") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expand_scale(add = 1)) +
+  theme(axis.text.y = element_blank(),panel.spacing=unit(0.1, "lines"), axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), legend.position = "none", axis.title.y=element_blank(), strip.background = element_rect(color = "white", fill = "white"), strip.text.x = element_blank()) +
+  scale_fill_manual(values = report_colors[1:3])
+
+plot_data <- k3m %>% 
+  
+  gather('cluster', 'prob', clust1:clust3) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+x <- ggplot(plot_data, aes(id, prob, fill = cluster)) +
+  geom_col(width=1.0) +
+  facet_grid(~pop, scales = 'free', space = 'free', switch = "x") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expand_scale(add = 1)) +
+  theme(axis.text.y = element_blank(),panel.spacing=unit(0.1, "lines"), axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), legend.position = "none", axis.title.y=element_blank(), strip.background = element_rect(color = "white", fill = "white"), strip.text.x = element_blank()) +
+  scale_fill_manual(values = report_colors[1:3])
+
+plot_data <- k4 %>% 
+  
+  gather('cluster', 'prob', clust1:clust4) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+c <- ggplot(plot_data, aes(id, prob, fill = cluster)) +
+  geom_col(width=1.0) +
+  facet_grid(~pop, scales = 'free', space = 'free', switch = "x") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expand_scale(add = 1)) +
+  theme(axis.text.y = element_blank(),panel.spacing=unit(0.1, "lines"), axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), legend.position = "none", axis.title.y=element_blank(), strip.background = element_rect(color = "white", fill = "white"), strip.text.x = element_blank()) +
+  scale_fill_manual(values = report_colors[1:4])
+
+plot_data <- k5 %>% 
+  
+  gather('cluster', 'prob', clust1:clust5) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+d <- ggplot(plot_data, aes(id, prob, fill = cluster)) +
+  geom_col(width=1.0) +
+  facet_grid(~pop, scales = 'free', space = 'free', switch = "x") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expand_scale(add = 1)) +
+  theme(axis.text.y = element_blank(),panel.spacing=unit(0.1, "lines"), axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), legend.position = "none", axis.title.y=element_blank(), strip.background = element_rect(color = "white", fill = "white"), strip.text.x = element_blank()) +
+  scale_fill_manual(values = report_colors[1:5])
+
+plot_data <- k6 %>% 
+  
+  gather('cluster', 'prob', clust1:clust6) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+e <- ggplot(plot_data, aes(id, prob, fill = cluster)) +
+  geom_col(width=1.0) +
+  facet_grid(~pop, scales = 'free', space = 'free', switch = "x") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expand_scale(add = 1)) +
+  theme(axis.text.y = element_blank(),panel.spacing=unit(0.1, "lines"), axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), legend.position = "none", axis.title.y=element_blank(), strip.background = element_rect(color = "white", fill = "white"), strip.text.x = element_blank()) +
+  scale_fill_manual(values = report_colors[1:6])
+
+plot_data <- k7 %>% 
+  
+  gather('cluster', 'prob', clust1:clust7) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+f <- ggplot(plot_data, aes(id, prob, fill = cluster)) +
+  geom_col(width=1.0) +
+  facet_grid(~pop, scales = 'free', space = 'free', switch = "x") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expand_scale(add = 1)) +
+  theme(axis.text.y = element_blank(),panel.spacing=unit(0.1, "lines"), axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), legend.position = "none", axis.title.y=element_blank(), strip.background = element_rect(color = "white", fill = "white"), strip.text.x = element_blank()) +
+  scale_fill_manual(values = report_colors[1:7])
+
+plot_data <- k8 %>% 
+  
+  gather('cluster', 'prob', clust1:clust8) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+g <- ggplot(plot_data, aes(id, prob, fill = cluster)) +
+  geom_col(width=1.0) +
+  facet_grid(~pop, scales = 'free', space = 'free', switch = "x") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expand_scale(add = 1)) +
+  theme(axis.text.y = element_blank(), panel.spacing=unit(0.1, "lines"), axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(), legend.position = "none", axis.title.y=element_blank(), strip.background = element_rect(color = "white", fill = "white"), strip.text.x = element_text(angle = 90)) +
+  scale_fill_manual(values = c(report_colors[1:7],"#EE7733"))
+
+
+
+
+cowplot::plot_grid(a,b,x,c,d,e,f,g, rel_heights = c(1,1,1,1,1,1,1,3) ,ncol=1, labels = c("k = 2", "k = 3a","k = 3b","k = 4","k = 5","k = 6","k = 7","k = 8"))
+```
+
+```{r, eval = FALSE}
+#some code for getting results for structure dicussion
+
+plot_data <- k6 %>% 
+  gather('cluster', 'prob', clust1:clust6) %>%
+  group_by(id) %>% 
+  mutate(likely_assignment = cluster[which.max(prob)],
+         assingment_prob = max(prob)) %>% 
+  arrange(likely_assignment, desc(assingment_prob)) %>% 
+  ungroup()
+
+plot_data %>%
+  group_by(pop, cluster) %>%
+  summarise(mean_cluster_membership = mean(prob))
+
+
+```
+
+
+### Results summary
+
+We focus our discussion of structure results at k = 6 where there was a local maximum value of delta k and bic of k-means clutering both suggested this is an informative number of genetic clusters/ancestral genetic populations.
+
+At k = 6, South Fork and WizardFalls individuals mostly derive their ancestry (79% and 91%, respectively) and from a single genetic cluster, while Twelvemile Creek only derives 8% of its ancestry from this cluster. In contrast Twelvemile creek derives the amjority of its ancestry from a different cluster (79%) and this cluster is to compose a high proportation (>15%) in 4 South Fork Crooked River samples and 2 CapeCodHatcheryStrain individuals. The next major ancestral genetic cluster (10% of mean ancestry) is the cluster that composes the major ancestry cluster (99%) for Paulina Creek. The third major ancestral genetic cluster (8% of mean ancestry) is the cluster that composes the major ancestry cluster Wizard Falls and South Fork Crooked River populations.
+
+At higher levels of k, new ancestral genetic clusters are found at a high level in individuals only from Twelvemile Creek, South Fork Crooked River, and the two samples in CapeCodHAtchery strain consistently similar to TwleveMile Creek Sample. 
+At lower levels of k, the major ancestry cluster for Paulina Creek (>98% across all k) is consistently found in Twelvemile creek at a higher proprition than any other population. It is only at k >=6 that this ancestry cluster appears to split, with most of the ancestry in Twelvemile Creek changing to a different cluster.
+
+Together with the GSI, PCA and DAPC results, the STRUCTURE results suggest that the Twelvemile Creek population are derived from an independent population that is somewhat similar to the nearby native Paulina Creek population, but experiences some admixture with South Fork Crooked River population. South Fork Crooked River samples are most likely descended from the Wizard Falls hatchery strain, and also experience admixture with TwelvemileCreek.
+
+## Conclusions/Summary
+
+After Exploratory Data Analysis using PCA we hypothesized that Twelvemile Creek and South Fork Crooked river populations are derived from different ancestors. Specifically, we set out to find evidence for or against:
+
+(1) South Fork Crooked River are derived from Wizard Falls hatchery stock
+(2) Twelvemile Creek are a native population, similar to but not derived from Paulina Creek.
+
+We set specific expectations for GSI, DAPC and STRUCTURE under these assumptions and all were met.
+
+_GSI_  
+We were able to successfully reassign reference individuals back to their source populations in tests using both leave-one-out and simulated mixture approaches. This suggests the reference dataset has sufficient power to make assignments if the samples are derived from these populations.   
+
+Rubias GSI assigned South Fork Crooked River samples to Wizard Falls hatchery stock with high confidence. However, the distribution of z-scores of the best assignment for each fish was not normally distributed for Twelvemile Creek samples, suggesting that these individuals are derived from a population not included in our reference dataset.  
+
+_DAPC_  
+We found 6 genetic clusters in the data and attempted to build axes of genetic variation that allowed us to discriminate among these genetic clusters. Two discriminant axes (Axis 1 and axis 5) separate de novo genetic clusters that seem to suggest that Twelvemile Creek is intermediate between WizardFalls and Paulina Creek at some markers, but different from both at others. Some individuals in the South Fork also cluster with Twelvemile Creek along these axes. In contrast, South Fork samples mostly fall in the same genetic cluster as Wizard Falls.
+
+These results are consistent with the idea that Twelvemile Creek are a native population similar to, but not descended from Paulina creek and that this Twelvemile Creek experiences gene flow from the connected South Fork population. The result for South Fork samples suggest this group is composed of naturally reproducing, Wizard Falls Hatchery strain descended individuals.
+
+Another interesting observation, two CapeCod hatchery strain individuals consisently cluster with Twelvemile Creek samples. 
+
+_STRUCTURE_  
+When we modeled six ancestral genetic clusters (supported by local maximum in delta K and BIC of k-means clustering), South Fork and WizardFalls individuals mostly derive their ancestry from a single genetic cluster, while Twelvemile Creek only derives a small portion of its ancestry from this cluster. In contrast Twelvemile creek derives the majority of its ancestry from a different cluster and this cluster also composes a high proportation in 4 South Fork Crooked River samples. The next major ancestral genetic cluster in Twelvemile Creek is the cluster that composes the major ancestry cluster (99%) for Paulina Creek, followed by Wizard Falls/South Fork Crooked cluster.
+
+At higher levels of k, new ancestral genetic clusters are found at a high level in individuals only from Twelvemile Creek, South Fork Crooked River At lower levels of k, the major ancestry cluster for Paulina Creek (>98% across all k) is consistently found in Twelvemile creek at a higher proprition than any other population. It is only at k >=6 that this ancestry cluster appears to split, with most of the ancestry in Twelvemile Creek changing to a different cluster.
+
+_Conclusion_  
+Together the GSI, STRUCTURE and DAPC results suggest that the Twelvemile Creek population are derived from an independent population that is somewhat similar to the nearby native Paulina Creek population, but experiences some admixture with South Fork Crooked River population. South Fork Crooked River samples are most likely descended from the Wizard Falls hatchery strain, and also experience admixture with TwelvemileCreek.
+
+Alternatively Twelvemile Creek samples may be derived from the "locally adapted hatchery stock" derived from Ochoco NF fish and stocked in the region, but it doesn't sound like we have these fish in our reference (need to get these details from partner agencies). It would be very interesting if this was the CapeCop stock. 
+
+
+# SFGL Panel Markers
+
+__All analyses below here not evaluated in final notebook__
+
+## Rubias  
+
+Our first attempt at assignment will use Rubias GSI against baselines from Cape Cod, Oak Springs, Round Butte, and Wizard Falls hatcheries as well as Paulina Creek. We will not attempt assignment to Crane Prairie because there is only a single sample.
+
+### Reformat Data
+
+The first step is to combine availbale information from possible source and sample populations into a single dataframe with the correct format. 
+```{r, message=FALSE, warning = FALSE, eval = FALSE}
+#the desired format for rubias is a gt table with alleles coded as integers, a unique column for each allele, and column names for each alele, with the second allele suffixed with _1. there are also sample type, individual id, reporting unit and collection columns example data below
+
+# sample_type	indiv	repunit	collection	OMGH1PROM1-SNP1	OMGH1PROM1-SNP1_1	Omy_101554-306	Omy_101554-306_1
+#reference	OmyAC19ROGR_4154	Rogue	fall	4	4	1	1
+#reference	OmyAC19ROGR_4253	Rogue	fall	1	1	1	1
+#reference	OmyAC19ROGR_4557	Rogue	fall	4	1	1	1
+
+# for the baselines provided by USFWS did this manually in a text editor
+baseline_269 <- read_tsv("genotype_data/baseline_269.txt")
+baseline_269 %<>%
+  mutate(across(everything(), as.character))
+
+baseline_379 <- read_tsv("genotype_data/baseline_379.txt")
+baseline_379 %<>%
+  mutate(across(everything(), as.character))
+
+# for the paulina creek samples, we need to export and then do some work
+load("genotype_data/genind_2.0.R")
+#write_tsv(filter(genos_2.2, Stream == "Paulina Creek"), file = "genotype_data/paulina.txt")
+
+baseline_paulina <- read_tsv("genotype_data/paulina.txt")
+baseline_paulina %<>%
+  mutate(across(everything(), as.character))
+
+#same for the samples...
+#write_tsv(filter(genos_2.2, Stream != "Paulina Creek"), file = "genotype_data/sample_genos.txt")
+samples_GSI <- read_tsv("genotype_data/sample_genos.txt")
+samples_GSI %<>%
+  mutate(across(everything(), as.character))
+
+#combine all of these into a single dataframe
+#note that some individuals between the two baseline datasets are repeated, we retained the row with the higher number of genotypes
+
+#rubias will crash if there are SNPs in the reference file that are absent from the mixture file, 
+#lets remove any columns in the reference files that are not in the mixture file
+
+GSI_reference <- bind_rows( samples_GSI, baseline_269, baseline_379, baseline_paulina)%>%
+  arrange(rowSums(is.na(.))) %>%
+  distinct(indiv, .keep_all = TRUE) %>%
+  filter(repunit != "CranePrarieReservoir") %>%
+  filter(sample_type != "mixture") %>%
+  select(colnames(samples_GSI))
+
+```
+
+
+### Power/Accuracy Simulation
+
+Next we run some simulations using the reference dataset to asses the accuracy and power of the baseline to correctly assign the halfpounders.
+
+#### Reference Self-Assignment
+
+First we attempt self-assignment of reference samples to their reporting group (Paulina, Oak)
+
+```{r, message=FALSE, warning = FALSE, eval = FALSE}
+sa <- self_assign(reference = GSI_reference, gen_start_col = 5)
+
+#summarise by reporting unit
+sa_to_repu <- sa %>%
+  group_by(indiv, collection, repunit, inferred_repunit) %>%
+  summarise(repu_scaled_like = sum(scaled_likelihood))
+
+# for each individual, assign to most likely reporting unit
+sa_assign <- sa_to_repu %>%
+  group_by(indiv) %>%
+  slice_max(repu_scaled_like)
+
+sa_assign$correct_assignment <- sa_assign$repunit == sa_assign$inferred_repunit
+
+sum(sa_assign$correct_assignment/nrow(sa_assign))
+```
+
+Self-assignment assigns (maximum scaled likelihood) reference individuals back to correct reporting unit 98.2% of time.
+
+
+#### Simulated Mixture
+
+While we can successfully assign reference individuals back to the correct reporting unit, what about a simulated mixture? 
+
+ let's assume our sample indivs are equally represented across the reporting units.
+
+Here we conduct a 500 simulations of a mixture of 200 samples drawn at equal rates from the reporting units.
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE, eval = FALSE}
+ref_sims_no_prior <- assess_reference_loo(reference = GSI_reference, 
+                     gen_start_col = 5, 
+                     reps = 500, 
+                     mixsize = 200,
+                     )
+
+tmp <- ref_sims_no_prior %>%
+  group_by(iter, repunit) %>%
+  summarise(true_repprop = sum(true_pi), 
+            reprop_posterior_mean = sum(post_mean_pi),
+            repu_n = sum(n)) %>%
+  mutate(repu_n_prop = repu_n / sum(repu_n))
+
+ggplot(tmp, aes(x = true_repprop, y = reprop_posterior_mean, colour = repunit)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  facet_wrap(~ repunit)
+```
+
+Using equal priors acorss the two reporting units the true vs inferred mixture proportions (above) show very small residuals.
+
+Now let's check how reliable an individual assignment (posterior probability) is from these simulations.
+
+```{r, message=FALSE, warning=FALSE, eval = FALSE}
+ref_sims_no_prior_indivs <- assess_reference_loo(reference = GSI_reference, 
+                     gen_start_col = 5, 
+                     reps = 500, 
+                     mixsize = 200,
+                     return_indiv_posteriors = TRUE)
+
+# summarise things
+repu_pofzs <- ref_sims_no_prior_indivs$indiv_posteriors %>%
+  filter(repunit == simulated_repunit) %>%
+  group_by(iter, indiv, simulated_collection, repunit) %>%  # first aggregate over reporting units
+  summarise(repu_PofZ = sum(PofZ)) %>%
+  ungroup() %>%
+  arrange(repunit, simulated_collection) %>%
+  mutate(simulated_collection = factor(simulated_collection, levels = unique(simulated_collection)))
+#> `summarise()` regrouping output by 'iter', 'indiv', 'simulated_collection' (override with `.groups` argument)
+
+# also get the number of simulated individuals from each collection
+num_simmed <- ref_sims_no_prior_indivs$indiv_posteriors %>%
+  group_by(iter, indiv) %>%
+  slice(1) %>%
+  ungroup() %>%
+  count(simulated_collection)
+  
+# note, the last few steps make simulated collection a factor so that collections within
+# the same repunit are grouped together in the plot.
+
+# now, plot it
+ggplot(repu_pofzs, aes(x = simulated_collection, y = repu_PofZ)) +
+  geom_boxplot(aes(colour = repunit)) +
+  geom_text(data = num_simmed, mapping = aes(y = 1.025, label = n), angle = 90, hjust = 0, vjust = 0.5, size = 3) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 9, vjust = 0.5)) +
+  ylim(c(0, 1.25))
+
+#make a table
+kable(repu_pofzs %>%
+  group_by(simulated_collection) %>%
+  summarize(mean_prob = mean(repu_PofZ)))
+```
+
+Near perfect assignment (98.8% overall mean) to reporting unit within each collection from simulations. Lowest probability of correct assignment to CapeCod and WizardFalls
+
+### GSI
+
+Let's do the GSI. Below we use rubias GSI to conduct three related analyses:  
+(1) Estimate the overall proportion (mixture propotion) from each baseline group 
+(2) Check for samples that are not from ANY of the reference populations   
+(3) conduct individual assignments  
+
+#### Mixture Proportions
+
+What proportion of the samples are from each of the reporting units (i.e. baseline pops)
+
+
+```{r, eval = FALSE}
+samples_GSI %<>%
+  mutate(repunit = NA) 
+  
+mix_est <- infer_mixture(reference = GSI_reference, mixture = samples_GSI, gen_start_col = 5 )
+
+
+kable(mix_est$mixing_proportions %>%
+  select(mixture_collection, repunit, pi))
+
+#plot the posterior densitites of the mixing proportions (discarding the first 200 sweeps as a burn in)
+trace_subset_twelvemile <- mix_est$mix_prop_traces %>%
+  filter(mixture_collection == "TwelvemileCreek", sweep > 200) %>%
+  group_by(sweep, repunit) %>%
+  summarise(repprop = sum(pi))
+
+ggplot(trace_subset_twelvemile, aes(x = repprop, colour = repunit)) +
+  geom_density()+theme_classic()+ggtitle("Twelvemile Creek")
+
+#next get some number out of this plot, estimate 95% credible intervals for the mixing proportions
+cis_twelve <- trace_subset_twelvemile %>%
+  group_by(repunit) %>%
+  summarise(loCI = quantile(repprop, probs = 0.025),
+            hiCI = quantile(repprop, probs = 0.975))
+
+cis_twelve
+
+#now for south fork
+trace_subset_SF <- mix_est$mix_prop_traces %>%
+  filter(mixture_collection == "SouthForkCrookedRiver", sweep > 200) %>%
+  group_by(sweep, repunit) %>%
+  summarise(repprop = sum(pi))
+
+ggplot(trace_subset_SF, aes(x = repprop, colour = repunit)) +
+  geom_density()+theme_classic()+ggtitle("South Fork")
+
+#next get some number out of this plot, estimate 95% credible intervals for the mixing proportions
+cis_twelve <- trace_subset_SF %>%
+  group_by(repunit) %>%
+  summarise(loCI = quantile(repprop, probs = 0.025),
+            hiCI = quantile(repprop, probs = 0.975))
+
+cis_twelve
+```
+
+The mixture proportion results vary between Twelvemile Creek and South Fork Crook River samples. 
+
+SFCR: 90% (73 - 99%) Wizard Falls, 7% (~0 - 7.3%) Paulina Creek
+Twelvemile: 45% (30 - 61%) Wizard Falls, 53% (37-68%) Paulina Creek
+
+Note that this is the overall mixture rate. It does not tell us the status of individuals
+
+#### Other system
+
+Here we check the z scores to see if any of the individual assignment are very weak, indicating that a sample may be derived from a region/stock other than those in our reference dataset
+
+```{r, eval = FALSE}
+map_rows <- mix_est$indiv_posteriors %>%
+  group_by(indiv) %>%
+  top_n(1, PofZ) %>%
+  ungroup()
+
+normo <- tibble(z_score = rnorm(1e06))
+ggplot(map_rows, aes(x = z_score)) +
+  geom_density(colour = "blue") +
+  geom_density(data = normo, colour = "black")
+```
+
+Uh oh, this suggests that while our references have sufficient information to assign individuals back to one of the references, our assignment are likely inaccurate because the true source population was not included in our reference. 
+
+#### Individuals Assignments
+
+Next we take examine the individual posteriors. We will sum the posteriour probabilities within a reporting unit for each individual, then choose the most likely reporting unit as that with highest probability.
+
+```{r, eval = FALSE}
+#aggregate
+repu_pofzs_assn <- mix_est$indiv_posteriors %>%
+  group_by(indiv, repunit) %>%  # first aggregate over reporting units
+  summarise(repu_PofZ = sum(PofZ)) %>%
+  ungroup() %>%
+  group_by(indiv) %>%
+  slice_max(repu_PofZ)
+
+ggplot(data = repu_pofzs_assn)+geom_histogram(aes(repu_PofZ, color = repunit))
+```
+
+Individual assignment have high likelihood for one or the other. This suggest a mixture of individuals of different descent, not extensive admixture between these two groups. However, rubias is not the most appropriate tool to make this assessment. 
+
+### Summary
+
+We are able to successfully reassign reference individuals back to their source populations in tests using both leave-one-out and simulated mixture approaches. This suggests the reference dataset has sufficient power to make assignments if the samples are derived from these populations. 
+
+However, thedistribution of z-scores of the best assignment for each fish was not normally distributed and was very low, suggesting that the sample individuals are derived from a population not included in our reference dataset. We will explore this possibility further using other approaches (below)
+
+## PCA 
+
+After that connfusing result, let's do some exploratory data analysis with PCA. What patterns can we find with unconstrained ordination of genetic variation?
+
+## data/setup 
+
+Let's get everything together in a genind
+```{r, eval = FALSE}
+#let's get everything in the genos format used by my analyses in R, since the paulina and sample data is already available, and the raw reference data is almost identical
+load("genotype_data/genotypes_2.2.R")
+genos_269 <- readxl::read_xlsx("data_from_odfw/Mykiss_GT_genosUSFSW.xlsx", sheet=1)
+genos_379 <- readxl::read_xlsx("data_from_odfw/Mykiss_GT_genosUSFSW.xlsx", sheet=2)
+
+#convert colname formatting to match
+colnames(genos_2.2) <- gsub("\\.", "_", colnames(genos_2.2))
+colnames(genos_2.2) <- gsub("-", "_", colnames(genos_2.2))
+genos_2.2 %<>%
+  rename(Population = Stream)
+
+# remove data from reference data that is absent from sample data
+genos_269 %<>%
+  rename(sample = Indidividual) %>%
+  select(Population, sample, colnames(genos_269)[colnames(genos_269) %in% colnames(genos_2.2)]) %>%
+  filter(Population != "CranePrarieReservoir")
+genos_379 %<>%
+  rename(sample = Individual) %>%
+  select(Population, sample, colnames(genos_379)[colnames(genos_379) %in% colnames(genos_2.2)]) %>%
+  filter(Population != "CranePrarieReservoir")
+
+#combine and remove duplicate indivs
+genos_2.3 <- genos_2.2 %>%
+  bind_rows(genos_269, genos_379, .id = "dataset") %>%
+  arrange(rowSums(is.na(.))) %>%
+  distinct(sample, .keep_all = TRUE)
+  
+
+
+#convert to matrix with inds as row names
+genos_2.4 <- as.matrix(genos_2.3[,c(12:(ncol(genos_2.3)-1))]) #caution potential hardcoding to exclude sex marker, get rid of the "-1" if you don't have a sex marker
+row.names(genos_2.4) <- genos_2.3$sample
+genind_1.0 <- df2genind(genos_2.4, sep ="", ploidy=2,NA.char = "NA")
+
+genind_1.0@pop <- as.factor(genos_2.3$Population)
+```
+
+
+The first step is to assess the number of PCs to retain in the analysis. We will do this using the Kaiser Guttman criterion (below) and a broken stick model (below)
+```{r, message=FALSE, warning=FALSE, eval = FALSE}
+# set missing data to mean allele freq (PCA does not accomodate NAs)
+X <- scaleGen(genind_1.0,  NA.method="mean")
+
+
+#then run pca, keep all PCs
+pca1 <- dudi.pca(X, scale = FALSE, scannf = FALSE, nf = 227)
+
+### check pcs to keep with kaiser-guttman and broken stick
+
+#kaiser guttman
+cutoff<-mean(pca1$eig)
+kg <- length((pca1$eig)[(pca1$eig)>cutoff])
+barplot(pca1$eig, main = "PCA eigenvalues\nKaiser-Guttman Criteria (red line)")
+abline(h = cutoff, col = "red")
+
+#broken stick
+n <- length(pca1$eig)
+bsm <- data.frame(j=seq(1:n), p = 0)
+bsm$p[1] <- 1/n
+for (i in 2:n){
+  bsm$p[i] <- bsm$p[i-1]+(1/(n+1-i))
+  
+}
+bsm$p <- 100*bsm$p/n
+
+pca_eigs_to_plot <- as.data.frame(cbind(100*pca1$eig/sum(pca1$eig)), rev(bsm$p))
+pca_eigs_to_plot %<>%
+  rownames_to_column(var = "bsm") %>%
+  rename(pca_eig_perc = V1) %>%
+  mutate(pca_eig_perc = as.numeric(pca_eig_perc))
+
+pca_eigs_to_plot %<>%
+  rowid_to_column("row_n") %>%
+  mutate(bsm = as.numeric(bsm)) %>%
+  pivot_longer(!row_n, names_to = "bsm_or_eig", values_to = "percent_variance")
+
+ggplot(data = pca_eigs_to_plot[1:71,])+geom_bar(aes(x = as.factor(row_n), y = percent_variance, color = bsm_or_eig, fill = bsm_or_eig), stat = "identity", position=position_dodge())+theme_classic()+xlab("Eigenvector")+ylab("percent of variance")+ggtitle("Broken Stick Model")
+
+```
+
+The Kaiser-Guttman criterion suggests retaining variation at the first 60 PCs, while the broken stick model suggests 16 PCs are relevant. 
+
+## Results
+
+We plot the first PC axes below 
+
+```{r, warning = FALSE, message=FALSE, eval = FALSE}
+
+#kept all PCs
+snp_pcs <- pca1$li#[,c(1:kg)]
+
+#now plot data
+snp_pcs %<>%
+  rownames_to_column("sample") %>%
+  left_join(select(genos_2.3, sample, Population, dataset), by = c("sample" = "sample")) %>%
+  mutate(dataset = case_when(dataset == 1 ~ "SFGL_genotyped",
+                             dataset == 2 ~ "USFS_Omy269",
+                             dataset == 3 ~ "USFS_Omy379"))
+
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis1, Axis2, color = Population, shape = dataset), alpha = 0.7) + stat_ellipse(aes(Axis1, Axis2, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis3, Axis4, color = Population, shape = dataset), alpha = 0.7) + stat_ellipse(aes(Axis3, Axis4, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis5, Axis6, color = Population, shape = dataset), alpha = 0.7) + stat_ellipse(aes(Axis5, Axis6, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+
+#3d plot as well
+plotly::plot_ly(x=snp_pcs$Axis1, y=snp_pcs$Axis2, z=snp_pcs$Axis3, type="scatter3d", mode="markers", color=snp_pcs$Population, alpha = 0.8)
+```
+
+The PCA results suggests there are some major problems combining data between reference and sample dataset. Along the first two component of genetic variation, the individuals cluster according to the panel used to genotype them! Furthermore, within populations genotyped with multiple panels (Wizard Falls, OakSprings and CapeCod), there are two clusters that align perfectly with the panel type.
+
+
+
+
+# $SFGL\bigcap Omy379$
+Many more markers intersect between the SFGL panel and the Omy379 panel, than between the SFGL panel and the Omy269 panel. Do these additional markers improve resolution? This comes with the cost of only a small number of samples in the Omy379 sample set.
+
+
+
+## PCA 
+
+Many more markers intersect between the SFGL panel and the Omy379 panel, than between the SFGL panel and the Omy269 panel. Do these additional markers improve resolution?
+
+###  set up
+```{r, eval = FALSE}
+load("genotype_data/genotypes_2.2.R")
+genos_379 <- readxl::read_xlsx("data_from_odfw/Mykiss_GT_genosUSFSW.xlsx", sheet=2)
+
+#convert colname formatting to match
+colnames(genos_2.2) <- gsub("\\.", "_", colnames(genos_2.2))
+colnames(genos_2.2) <- gsub("-", "_", colnames(genos_2.2))
+genos_2.2 %<>%
+  rename(Population = Stream)
+
+common_cols <- intersect(colnames(genos_2.2), colnames(genos_379))
+
+# remove data from reference data that is absent from sample data
+
+genos_379 %<>%
+  rename(sample = Individual) %>%
+  select(sample, common_cols) %>%
+  filter(Population != "CranePrarieReservoir")
+
+genos_3.0 <- genos_2.2 %>%
+  select(sample, common_cols)
+
+
+#combine and tag duplicate indivs
+genos_2.3 <- genos_3.0 %>%
+  bind_rows( genos_379) 
+
+#convert to matrix with inds as row names
+genos_2.4 <- as.matrix(genos_2.3[,3:284]) #caution potential hardcoding to exclude sex marker, get rid of the "-1" if you don't have a sex marker
+row.names(genos_2.4) <- genos_2.3$sample
+genind_1.0 <- df2genind(genos_2.4, sep ="", ploidy=2,NA.char = "NA")
+
+genind_1.0@pop <- as.factor(genos_2.3$Population)
+```
+
+```{r, message=FALSE, warning=FALSE, eval = FALSE}
+# set missing data to mean allele freq (PCA does not accomodate NAs)
+X <- scaleGen(genind_1.0,  NA.method="mean")
+
+
+#then run pca, keep all PCs
+pca1 <- dudi.pca(X, scale = FALSE, scannf = FALSE, nf = 227)
+
+### check pcs to keep with kaiser-guttman and broken stick
+
+#kaiser guttman
+cutoff<-mean(pca1$eig)
+kg <- length((pca1$eig)[(pca1$eig)>cutoff])
+barplot(pca1$eig, main = "PCA eigenvalues\nKaiser-Guttman Criteria (red line)")
+abline(h = cutoff, col = "red")
+
+#broken stick
+n <- length(pca1$eig)
+bsm <- data.frame(j=seq(1:n), p = 0)
+bsm$p[1] <- 1/n
+for (i in 2:n){
+  bsm$p[i] <- bsm$p[i-1]+(1/(n+1-i))
+
+}
+bsm$p <- 100*bsm$p/n
+
+pca_eigs_to_plot <- as.data.frame(cbind(100*pca1$eig/sum(pca1$eig)), rev(bsm$p))
+pca_eigs_to_plot %<>%
+  rownames_to_column(var = "bsm") %>%
+  rename(pca_eig_perc = V1) %>%
+  mutate(pca_eig_perc = as.numeric(pca_eig_perc))
+
+pca_eigs_to_plot %<>%
+  rowid_to_column("row_n") %>%
+  mutate(bsm = as.numeric(bsm)) %>%
+  pivot_longer(!row_n, names_to = "bsm_or_eig", values_to = "percent_variance")
+
+ggplot(data = pca_eigs_to_plot[1:71,])+geom_bar(aes(x = as.factor(row_n), y = percent_variance, color = bsm_or_eig, fill = bsm_or_eig), stat = "identity", position=position_dodge())+theme_classic()+xlab("Eigenvector")+ylab("percent of variance")+ggtitle("Broken Stick Model")
+
+```
+
+Kaiser guttman - 39, Broken stick - 4
+
+### results
+
+```{r, eval = FALSE}
+#kept all PCs
+snp_pcs <- pca1$li#[,c(1:kg)]
+
+#now plot data
+snp_pcs %<>%
+  rownames_to_column("sample") %>%
+  left_join(select(genos_2.3, sample, Population), by = c("sample" = "sample"))
+
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis1, Axis2, color = Population), alpha = 0.7) + stat_ellipse(aes(Axis1, Axis2, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+ggplot(data = snp_pcs)+geom_point(aes(Axis3, Axis4, color = Population), alpha = 0.7) + stat_ellipse(aes(Axis3, Axis4, color = Population)) +theme_classic()+scale_color_manual(name = "Population", values = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB" ))
+
+#3d plot as well
+plotly::plot_ly(x=snp_pcs$Axis1, y=snp_pcs$Axis2, z=snp_pcs$Axis3, type="scatter3d", mode="markers", color=snp_pcs$Population, alpha = 0.8)
+```
+
+More information allows us to better discriminate between the populations, although there are far fewer samples within the reference populations. Here we see that while the group centroids are the same, along the first two axes of genetic variation, Twelvemile creek does not demonstrate overlap with wizard falls and Paulina Creek suggesting that if admixture is occuring between native and hatchery fish on twelvemile it is likely complete. A more detailed analysis of structure within twelvemile creek is neccessary to know for sure. Also interesting: there is some variaiton within south fork that extends beyond the observed variation within wizard falls in the direction of paulina creek.
+
+Axis three complicates the simple interpretation above. There is genetic variation that suggest that some of the differentiation between Twelvemile Creek Fish and wizard falls and mainstem SF collectively is separate from the differentation between Paulina Creek and wizardfalls+mainstemSF samples. This suggests that Paulina Creek may be similar to Twelvemile creeks samples, but there is an additional aspect of genetic variation that makes twelvemile creek fish unique. This fits with the idea that Paulina represents a close fit to native twelvemile creek redband, but twelvemile creek fish are not directly descended form Paulina, instead they share a more recent common ancestor than Twelvemile and WizardFalls+mainstem SF Crooked.
+
+Some other caveats here:  
+- because the number of hatchery reference samples is smaller here, we are capturing less of the diversity of these populations, which might be leading to (1)  observation of lower overlap between Twelvemile and WizardFalls (2) observation of south fork samples beyond the variation within WizardFalls
+
+My best guess as to what is going on here is that the local BLM biologist was right; we're looking at native fish on the Twelvemile with some admixture between these fish and the hatchery derived, but naturally reproducing population on the mainstem. 
+
+Some further ways to test this assumption is using structure to estimate ancestry proportions for each individual and DAPC. 
+
+Specifically, we can develop the following expectations from STRUCTURE and DAPC from this hypothesis developed from the exploratory data analyses above (PCA)
+
+Structure: Wizard Falls and Mainstem SF Crooked samples have 1 genetic cluster that composes the majority of their inferred ancestry, Paulina a second, and Twelve mile creek will individuals will have consistent mixed admixture between these two clusters
+
+DAPC: One DAPC axis among de novo genetic clusters will separate wizard falls + mainstem SF crooked from paulina, with twelvemile intermediate,  
+a second DAPC axis will separate Twelvemile creek from all other,  
+other DA axes will peel off different hatchery strains in the reference dataset (perhaps we should cut round butte and cape cod out, since no analysis so far has suggested they play a role )
+
+## DAPC
+
+### de novo
+
