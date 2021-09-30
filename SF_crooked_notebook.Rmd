@@ -41,7 +41,7 @@ Early 2000s - 2012: Wild fish from Ochoco NF (where?) were used to create a "loc
 
 # Data
 
-- Sample Data (fin clips from fish sampled in 2019 and 2020), genotyped using the Omy391 panel    
+- Sample Data (fin clips from fish sampled in 2019 and 2020), genotyped using the Omy392 panel    
     - SF Crooked (n = 17), unknown origin  
     - Twelvemile Creek (n = 41), unknown origin  
     - Paulina Creek (n = 35), native redband to use as baseline with samples below  
@@ -536,7 +536,7 @@ cis_twelve
 The mixture proportion results vary between Twelvemile Creek and South Fork Crook River samples. 
 
 SFCR: 96% (83 - 100%) Wizard Falls  
-Twelvemile: 83% (69 - 81%) Wizard Falls, 15% (5-29%) Paulina Creek
+Twelvemile: 83% (69 - 93%) Wizard Falls, 15% (5-29%) Paulina Creek
 
 Note that this is the overall mixture rate. It does not tell us the status of individuals
 
@@ -635,11 +635,11 @@ clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 7)
 kable(table(pop(genind_1.0), clusts$grp), caption = "a priori population vs genetic cluster" )
 ```
 
-BIC suggests k = 6 is the most informative number of clusters. At k=6 CapeCod, OakSprings and RoundButte all form their own genetic clusters. The three remaining clusters fit with earlier findings using rubias and pca.
+BIC suggests k = 6 is the most informative number of clusters. At k=6 OakSprings and RoundButte form their own genetic clusters and CapeCod forms mostly its own cluster (2 of 45 individuals fall into a different cluster). The three remaining clusters fit with earlier findings using rubias and pca.
 
 Cluster 1: All wizard falls fish, and most South Fork Samples
 Cluster 2: All Paulina Samples and 1 Twelvemile
-Cluster 3: All but 1 Twelvemile samples and 3 South Fork samples. 
+Cluster 5: All but 1 Twelvemile samples and 3 South Fork samples. 
 
 Next we'll fit DAPC on our data to attempt to discriminate among these 6 clusters.
 
@@ -650,10 +650,10 @@ clusts <- find.clusters(genind_1.0, n.pca = 226, n.clust = 6)
 
 #mat <- as.matrix(scaleGen(genind_1.0, NA.method="mean", scale=FALSE, center=FALSE))
 #xpop <- clusts$grp
-#xval <- xvalDapc(mat, xpop, n.pca.max = 200, training.set = 0.9, result = "overall", center = TRUE, scale = FALSE, n.pca = seq(1,30, length.out = 60), n.rep = 50, xval.plot = TRUE)
+#xval <- xvalDapc(mat, xpop, n.pca.max = 200, training.set = 0.9, result = "overall", center = TRUE, scale = FALSE, n.pca = seq(1,30), n.rep = 50, xval.plot = TRUE)
 
 
-dapc_full_denovo <- dapc(genind_1.0, clusts$grp, n.pca =22, n.da = 5 )
+dapc_full_denovo <- dapc(genind_1.0, clusts$grp, n.pca =12, n.da = 5 )
 
 plot_data <- as.data.frame(cbind(dapc_full_denovo$ind.coord, genind_1.0$pop, clusts$grp))
 colnames(plot_data) <- c("LD1", "LD2", "LD3","LD4","LD5", "pop", "grp")
@@ -688,15 +688,15 @@ ggplot(data=plot_data)+geom_point(aes(x=LD3, y=LD4, color=grp))+scale_color_viri
 
 Very similar results to the PCA, but slightly higher resolution (makes sense)
 
-Axis 1 and axis 5 separate de novo genetic clusters that seem to suggest that Twelvemile Creek is intermediate between WizardFalls and Paulina Creek at some markers and different from both at others. Some individuals in the South Fork also cluster with Twelvemile Creek along these axes
+Axis 1 and axis 5 (third figure) separate de novo genetic clusters that seem to suggest that Twelvemile Creek is intermediate between WizardFalls and Paulina Creek at some markers and different from both at others. Some individuals in the South Fork also cluster with Twelvemile Creek along these axes
 
 This is consistent with the idea that Twelvemile Creek are a native population experiencing gene flow from the connected South Fork population, which is composed of naturally reproducing, Wizard Falls Hatchery strain descended individuals.
 
-Another interesting observation, two CapeCop hatchery strain individuals consi
+Another interesting observation, two CapeCop hatchery strain individuals consistently group with Twelvemile Creek. Mislabeled, or something biological?
 
 ## STRUCTURE
 
-Here we use a bayesian, model based clustering algorithm (STRUCTURE) to infer population structure and estimate admixture proportions of individual samples.
+Here we use a Bayesian, model based clustering algorithm (STRUCTURE) to infer population structure and estimate admixture proportions of individual samples.
 
 First we need to get our dataset ready for structure: remove linked loci, convert to structure format.
 ```{r, cache=TRUE, message=FALSE, warning=FALSE}
@@ -728,7 +728,7 @@ write_tsv(as.data.frame(df), "genotype_data/all.str", col_names = FALSE)
 
 ```
 
-Remove 15 linked loci.
+Remove 14 linked loci.
 
 Alpha stabilized after ~500 iterations in burnin test using 50k iterations across k=2 to k=8.
 
@@ -946,12 +946,12 @@ plot_data %>%
 
 We focus our discussion of structure results at k = 6 where there was a local maximum value of delta k and bic of k-means clutering both suggested this is an informative number of genetic clusters/ancestral genetic populations.
 
-At k = 6, South Fork and WizardFalls individuals mostly derive their ancestry (79% and 91%, respectively) and from a single genetic cluster, while Twelvemile Creek only derives 8% of its ancestry from this cluster. In contrast Twelvemile creek derives the amjority of its ancestry from a different cluster (79%) and this cluster is to compose a high proportation (>15%) in 4 South Fork Crooked River samples and 2 CapeCodHatcheryStrain individuals. The next major ancestral genetic cluster (10% of mean ancestry) is the cluster that composes the major ancestry cluster (99%) for Paulina Creek. The third major ancestral genetic cluster (8% of mean ancestry) is the cluster that composes the major ancestry cluster Wizard Falls and South Fork Crooked River populations.
+At k = 6, South Fork and WizardFalls individuals mostly derive their ancestry (80% and 91%, respectively) and from a single genetic cluster, while Twelvemile Creek only derives 8% of its ancestry from this cluster. In contrast, Twelvemile creek derives the majority of its ancestry from a different cluster (79%) and this cluster is to compose a high proportation (>15%) in 4 South Fork Crooked River samples and 2 CapeCodHatcheryStrain individuals. The next major ancestral genetic cluster (10% of mean ancestry) is the cluster that composes the major ancestry cluster (99%) for Paulina Creek. The third major ancestral genetic cluster (8% of mean ancestry) is the cluster that composes the major ancestry cluster Wizard Falls and South Fork Crooked River populations.
 
-At higher levels of k, new ancestral genetic clusters are found at a high level in individuals only from Twelvemile Creek, South Fork Crooked River, and the two samples in CapeCodHAtchery strain consistently similar to TwleveMile Creek Sample. 
+At higher levels of k, new ancestral genetic clusters are found at a high proportion in individuals only from Twelvemile Creek, South Fork Crooked River, and the two samples in CapeCodHAtchery strain consistently similar to TwleveMile Creek Sample. 
 At lower levels of k, the major ancestry cluster for Paulina Creek (>98% across all k) is consistently found in Twelvemile creek at a higher proprition than any other population. It is only at k >=6 that this ancestry cluster appears to split, with most of the ancestry in Twelvemile Creek changing to a different cluster.
 
-Together with the GSI, PCA and DAPC results, the STRUCTURE results suggest that the Twelvemile Creek population are derived from an independent population that is somewhat similar to the nearby native Paulina Creek population, but experiences some admixture with South Fork Crooked River population. South Fork Crooked River samples are most likely descended from the Wizard Falls hatchery strain, and also experience admixture with TwelvemileCreek.
+Together with the GSI, PCA and DAPC results, the STRUCTURE results suggest that the Twelvemile Creek population are derived from an independent population that is somewhat similar to the nearby native Paulina Creek population, but experiences some admixture with South Fork Crooked River population. South Fork Crooked River samples are most likely descended from the Wizard Falls hatchery strain, and experience admixture with TwelvemileCreek.
 
 ## Conclusions/Summary
 
@@ -968,14 +968,14 @@ We were able to successfully reassign reference individuals back to their source
 Rubias GSI assigned South Fork Crooked River samples to Wizard Falls hatchery stock with high confidence. However, the distribution of z-scores of the best assignment for each fish was not normally distributed for Twelvemile Creek samples, suggesting that these individuals are derived from a population not included in our reference dataset.  
 
 _DAPC_  
-We found 6 genetic clusters in the data and attempted to build axes of genetic variation that allowed us to discriminate among these genetic clusters. Two discriminant axes (Axis 1 and axis 5) separate de novo genetic clusters that seem to suggest that Twelvemile Creek is intermediate between WizardFalls and Paulina Creek at some markers, but different from both at others. Some individuals in the South Fork also cluster with Twelvemile Creek along these axes. In contrast, South Fork samples mostly fall in the same genetic cluster as Wizard Falls.
+We found 6 genetic clusters in the data and attempted to build axes of genetic variation that allowed us to discriminate among these genetic clusters. Two discriminant axes (axis 1 and axis 5) separate de novo genetic clusters in a pattern that suggests Twelvemile Creek is intermediate between WizardFalls and Paulina Creek at some markers, but different from both at others. Some individuals in the South Fork also cluster with Twelvemile Creek along these axes. In contrast, South Fork samples mostly fall in the same genetic cluster as Wizard Falls.
 
-These results are consistent with the idea that Twelvemile Creek are a native population similar to, but not descended from Paulina creek and that this Twelvemile Creek experiences gene flow from the connected South Fork population. The result for South Fork samples suggest this group is composed of naturally reproducing, Wizard Falls Hatchery strain descended individuals.
+These results are consistent with the idea that Twelvemile Creek are a native population similar to, but not descended from Paulina creek and that this Twelvemile Creek population experiences gene flow from the connected South Fork population. The result for South Fork samples suggest this group is composed of naturally reproducing, Wizard Falls Hatchery strain descended individuals.
 
 Another interesting observation, two CapeCod hatchery strain individuals consisently cluster with Twelvemile Creek samples. 
 
 _STRUCTURE_  
-When we modeled six ancestral genetic clusters (supported by local maximum in delta K and BIC of k-means clustering), South Fork and WizardFalls individuals mostly derive their ancestry from a single genetic cluster, while Twelvemile Creek only derives a small portion of its ancestry from this cluster. In contrast Twelvemile creek derives the majority of its ancestry from a different cluster and this cluster also composes a high proportation in 4 South Fork Crooked River samples. The next major ancestral genetic cluster in Twelvemile Creek is the cluster that composes the major ancestry cluster (99%) for Paulina Creek, followed by Wizard Falls/South Fork Crooked cluster.
+When we modeled six ancestral genetic clusters (supported by local maximum in delta K and BIC of k-means clustering), South Fork and WizardFalls individuals mostly derive their ancestry from a single genetic cluster, while Twelvemile Creek individuals only derive a small portion of their ancestry from this cluster. In contrast Twelvemile creek derives the majority of its ancestry from a different cluster and this cluster also composes a high proportation in 4 South Fork Crooked River samples. The next major ancestral genetic cluster in Twelvemile Creek is the cluster that composes the major ancestry cluster (99%) for Paulina Creek, followed by Wizard Falls/South Fork Crooked cluster.
 
 At higher levels of k, new ancestral genetic clusters are found at a high level in individuals only from Twelvemile Creek, South Fork Crooked River At lower levels of k, the major ancestry cluster for Paulina Creek (>98% across all k) is consistently found in Twelvemile creek at a higher proprition than any other population. It is only at k >=6 that this ancestry cluster appears to split, with most of the ancestry in Twelvemile Creek changing to a different cluster.
 

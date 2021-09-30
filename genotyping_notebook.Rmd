@@ -89,7 +89,7 @@ __Main Genotyper__
 #!/bin/bash
 #$ -S /bin/bash
 #$ -t 1-99
-#$ -tc 32
+#$ -tc 99
 #$ -N decompress
 #$ -cwd
 #$ -o $JOB_NAME_$TASK_ID.out
@@ -119,7 +119,7 @@ gunzip -c $INFILE > ${INFILE%.gz}
 
 #$ -t 1-99
 
-#$ -tc 32
+#$ -tc 99
 
 #$ -N GTseq-genotyperv3
 
@@ -136,7 +136,7 @@ OUTFILE=$(basename ${INFILE%.fastq}.genos)
 
 GTSEQ_GENO="/dfs/Omalley_Lab/dayan/software/GTseq-Pipeline/GTseq_Genotyper_v3.1.pl" #again, change this path to your own copy of this script
 
-PROBE_SEQS="/dfs/Omalley_Lab/dayan/software/GTseq-Pipeline/Omy_GTseq390_ProbeSeqs.csv" #change the probe seq file to match whatever panel you are using
+PROBE_SEQS="/dfs/Omalley_Lab/dayan/software/GTseq-Pipeline/Omy_390_probe_seqs.csv" #change the probe seq file to match whatever panel you are using
 
 perl $GTSEQ_GENO $PROBE_SEQS $INFILE > $OUTFILE
 
@@ -228,13 +228,15 @@ genos_0.1 <- read_csv("genotype_data/sf_crooked_GTs_0.1.csv")
 genos_0.1 %<>%
   mutate(control = case_when(str_detect(Sample, "positive") ~ "positive",
                              str_detect(Sample, "negative") ~ "negative",
+                             str_detect(Sample, "HetAnad") ~ "het_anad",
+                             str_detect(Sample, "WintRes") ~ "wint_res",
                              TRUE ~ "sample"))
 
 # clean up sample name field
 # split the sample name and the adapter sequence (note that replicates will have the same sample name, but we'll keep track with the adapter sequences)
 
 genos_0.1 %<>%
-  mutate(adapter = str_extract(Sample, "[ATCG]{6}-[ATCG]{6}")) %>%
+  mutate(adapter = str_extract(Sample, "[ATCG]{6}_[ATCG]{6}")) %>%
   mutate(sample_simple = str_extract(Sample, "[:upper:][:lower:]{2}[AJCU][RC]\\d{2}\\w{4}_\\d{4}")) %>%
   relocate(Sample, sample_simple, adapter)
 
@@ -266,7 +268,7 @@ Looks good (except for those aging positive controls)
 
 ### Replicates
 
-The only samples that were replicated were controls, so this part of the SOP isn't really doing anything.
+The only samples that were replicated were controls, so this part of the SOP isn't really doing anything. Commented out the code not doing anything
 
 ```{r, cache=TRUE, warning=FALSE, message=FALSE}
 #LOCAL R
@@ -278,31 +280,31 @@ genos_0.11 <- genos_0.1 %>%
 
 # sometimes we'll use more than a single replicate, this broke a previous version of this code chunk, for now we'll find the triplicate (or more) samples, and keep the two with greatest on target read depth (ignoring triplicates quadruplicates etc)
  
-genos_0.11 %<>% 
-  group_by(sample_simple) %>%
-  slice_max(order_by = `On-Target Reads`, n = 2)
-
-#now let's get duplicated samples
-dups <- genos_0.11[genos_0.11$sample_simple %in% genos_0.11$sample_simple[duplicated(genos_0.11$sample_simple)],]
-dups <- dups[order(dups$sample_simple),]
-
-# next we'll calculate the percent concordance among replicates
-# woof I don't see a good way around using a nested for loop here, maybe fix this in the future
-
-dups_genos <- dups[,9:ncol(dups)] 
-rep_info <- matrix(ncol=ncol(dups_genos), nrow=nrow(dups_genos)/2)
-colnames(rep_info) <- colnames(dups_genos)
-for (j in 1:(nrow(dups_genos)/2)) {
-for (i in 1:ncol(dups_genos)) {
-  rep_info[j,i] <- sum(dups_genos[(j*2)-1,i]==dups_genos[(j*2),i])
-}
-  }
-
-geno_concordance <- as.data.frame(as.matrix(rep_info)) %>%
-  rowMeans()
-
-rep_data <- as.data.frame(cbind(dups[c(1:length(geno_concordance))*2,1], geno_concordance))
-ggplot(data=rep_data)+geom_histogram(aes(x=geno_concordance))+theme_classic()
+# genos_0.11 %<>% 
+#   group_by(sample_simple) %>%
+#   slice_max(order_by = `On-Target Reads`, n = 2)
+# 
+# #now let's get duplicated samples
+# dups <- genos_0.11[genos_0.11$sample_simple %in% genos_0.11$sample_simple[duplicated(genos_0.11$sample_simple)],]
+# dups <- dups[order(dups$sample_simple),]
+# 
+# # next we'll calculate the percent concordance among replicates
+# # woof I don't see a good way around using a nested for loop here, maybe fix this in the future
+# 
+# dups_genos <- dups[,9:ncol(dups)] 
+# rep_info <- matrix(ncol=ncol(dups_genos), nrow=nrow(dups_genos)/2)
+# colnames(rep_info) <- colnames(dups_genos)
+# for (j in 1:(nrow(dups_genos)/2)) {
+# for (i in 1:ncol(dups_genos)) {
+#   rep_info[j,i] <- sum(dups_genos[(j*2)-1,i]==dups_genos[(j*2),i])
+# }
+#   }
+# 
+# geno_concordance <- as.data.frame(as.matrix(rep_info)) %>%
+#   rowMeans()
+# 
+# rep_data <- as.data.frame(cbind(dups[c(1:length(geno_concordance))*2,1], geno_concordance))
+# ggplot(data=rep_data)+geom_histogram(aes(x=geno_concordance))+theme_classic()
 
 ```
 
@@ -323,12 +325,6 @@ genos_0.2 <- genos_0.11 %>%
 ```
 
 
-```{r}
-#lets get rid of the last control
-
-genos_0.2 %<>%
-  filter(!str_detect(Sample, "HetAn"))
-```
 ### Sex Ratios
 
 __If you are using the OmySEX and OtsSEX scripts to call sex genotypes, read this section. If else, skip it, and move on to filtering.__
@@ -369,7 +365,7 @@ Here, instead of relying on a harcoded value for the proportion of reads dedicat
 
 # First let's collect the number of on-target reads for each sample in the sex_marker_info dataframe
 sex_marker_info$sample <- str_extract(sex_marker_info$ind, "[:upper:][:lower:]{2}[AJCU][RC]\\d{2}\\w{4}_\\d{4}")
-sex_marker_info$adapter <- str_extract(sex_marker_info$ind, "[ATCG]{6}-[ATCG]{6}") 
+sex_marker_info$adapter <- str_extract(sex_marker_info$ind, "[ATCG]{6}_[ATCG]{6}") 
 
 sex_marker_info %<>%
   left_join(dplyr::select(genos_0.1, sample_simple, adapter, `On-Target Reads`), by = c("sample" = "sample_simple" , "adapter" = "adapter"))
@@ -405,8 +401,7 @@ kable(sex_marker_info %>%
         summarise(count = n(), mean_depth = mean(`On-Target Reads`)), caption = "Corrected Called Sex Ratio")
 
 ```
-
-In the example data, this correction looks like it worked: Called males follow a 1:1 line and there are very few uncalled sex genotypes, except for samples with very low total on-target reads. Also the overall sex ratio of this sample is closer to our a priori expectations.
+This correction looks like it worked: Called males follow a 1:1 line and there are very few uncalled sex genotypes, except for samples with very low total on-target reads. Also the overall sex ratio of this sample is closer to our a priori expectations.
 
 Finally let's correct the sex genotypes in the data.
 
@@ -462,6 +457,7 @@ missing$marker <- row.names(missing)
 ggplot(missing) + geom_histogram(aes(x=missingness))+geom_vline(aes(xintercept= 0.2), color="red")+geom_vline(aes(xintercept= 0.1), color="blue")+theme_classic()+xlab("missingness (loci)")
 ```
 
+A great looking library!
 
 __0.3: Extremely Bad Loci and Individuals Excluded__
 
@@ -517,7 +513,7 @@ IFI <- marker_info %>%
 # 2:
 
 IFI$sample <- str_extract(IFI$ind, "[:upper:][:lower:]{2}[AJCU][RC]\\d{2}\\w{4}_\\d{4}")
-IFI$adapter <- str_extract(IFI$ind, "[ATCG]{6}-[ATCG]{6}") 
+IFI$adapter <- str_extract(IFI$ind, "[ATCG]{6}_[ATCG]{6}") 
 
 
 genos_0.3 <- genos_0.3 %>%
@@ -597,7 +593,7 @@ IFI <- marker_info %>%
 # 2: 
 
 IFI$sample <- str_extract(IFI$ind, "[:upper:][:lower:]{2}[AJCU][RC]\\d{2}\\w{4}_\\d{4}")
-IFI$adapter <- str_extract(IFI$ind, "[ATCG]{6}-[ATCG]{6}") 
+IFI$adapter <- str_extract(IFI$ind, "[ATCG]{6}_[ATCG]{6}") 
 
 
 genos_0.4 <- genos_0.4 %>%
@@ -617,7 +613,6 @@ genos_0.4 <- genos_0.4 %>%
 
 ```
 
-Note that the table above is blank in the example script because 0 individuals showed high contamination.
 
 __0.3 -> 0.4 Filtering Log__
 
@@ -696,8 +691,8 @@ plots$plots[[paralog_possible[10]]] #manually looped through these plots by chan
 
 ```
 
-"Omy_RAD57916-29", "Omy_RAD29352-6"
-Removed 2 bad markers
+
+Removed 2 bad markers: "Omy_RAD57916-29", "Omy_RAD29352-6"
 ```{r}
 # Local R
 
@@ -718,15 +713,12 @@ genos_1.0 <- genos_0.5 %>%
   select_if(~ length(unique(.)) > 1)
 ```
 
-REmoved 28 monomorphic
+Removed 27 monomorphic
 
 __Duplicate Samples__
 
-Some sample tissues are provided in batches of fin clips introducing the possibility for unknown duplicates in the sample. Let's make sure no fin clips broke apart leading to a single individual to be represented twice in the dataset. __You may not want to run this if you are confident your samples do not contain duplicates__ Rather than fussing with installing coancestry for windows on a unix system, estimated relatedness using an R package (related) which can implement the code from Coancestry on any operating system. 
+Individual samples so skipped this step
 
-Alternatively, to run the code in Coancestry on a windows machine, use the GUI.
-
-We used the estimator from Lynch and Ritland 1999 #not dyadic likelihood estimator, Milligan (2003) 
 ```{r, eval=FALSE}
 # Local R
 
