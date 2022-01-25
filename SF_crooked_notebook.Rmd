@@ -46,7 +46,7 @@ Early 2000s - 2012: Wild fish from Ochoco NF (where?) were used to create a "loc
     - Twelvemile Creek (n = 41), unknown origin  
     - Paulina Creek (n = 35), native redband to use as baseline with samples below  
 - Baseline Data
-  - Omy379, samples genotyped using the Omy379 panel   
+  - Omy379, samples genotyped using the Omy379 panel (note these individuals are repeats of the individuals in the Omy269 baseline)  
       - Cape Cod Hatchery	(n = 10)  
       - Crane Prairie Reservoir	(n = 1)  
       - Oak Springs Hatchery (n = 10)  
@@ -63,7 +63,7 @@ Early 2000s - 2012: Wild fish from Ochoco NF (where?) were used to create a "loc
 
 There is incomplete overlap of markers among the three gtseq panels used in this analysis. A pilot analysis of these data suggests that missing data when using a union join (any marker in any panel) and a join using only SFGL markers produced major issues (the principal structure in the data was driven by the panel, and GSI z-scores could not be readily compared due to different missing data rates across reference samples).
 
-An intersect join of data (only markers shared across all three panels)  reduces the available data for analysis and leads to weaker discrimination among populations than estimated using all available data. Another challenge is the that markers in the full intersect dataset ($SFGL\bigcap Omy269\bigcap Omy379$). Had very few of the adaptive genetic markers (10 total labeled simply "adaptive", 0 run timing, 0 residency-anadromy ) that we are most interested in and play a particularly important role in shaping among-population differences. 
+An intersect join of data (only markers shared across all three panels)  reduces the available data for analysis and leads to weaker discrimination among populations than estimated using all available data. Another challenge is the that markers in the full intersect dataset ($SFGL\bigcap Omy269\bigcap Omy379$) had very few of the adaptive genetic markers (10 total labeled simply "adaptive", 0 run timing, 0 residency-anadromy ) that we are most interested in and play a particularly important role in shaping among-population differences. 
 
 An intersect join of the SFGL panel and the Omy379 panel ($SFGL\bigcap Omy269\bigcap Omy379$) had lots of markers, but very few samples in the reference populations.  
 

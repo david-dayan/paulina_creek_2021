@@ -1,0 +1,184 @@
+Individual name	Pedigree name	Age	Brood Year	Capture Location (4)	Collected By	Collection Year	Comment	Date Collected	Fork Length (mm)	Hatchery / Wild	HOR / NOR assignment	Latitude	Life History Stage	Longitude	Phenotypic sex	PIT Tag	Population ID	Preservation Method	Project number	Received From	Region (1)	Resident / Anadromous	Run Type	Spawn Date	Spawn Year	Spawned with	Species	Synonym 1	Synonym 2	Synonym 3	Tissue Type	Total Length (mm)	Tributary (3)	Used for broodstock	Watershed (2)	Weight (g)
+420-001	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-002	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-003	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-004	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-005	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-006	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-007	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-008	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-009	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-010	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-011	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-012	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-013	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-014	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-015	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-016	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-017	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-018	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-019	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-020	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-021	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-022	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-023	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-024	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-025	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-026	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-027	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-028	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-029	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-030	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-031	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-032	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-033	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-034	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-035	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-036	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-037	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-038	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-039	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-040	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-041	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+420-042	420			Santa Ynez	Glen Greenwald	2000												Ethanol									Oncorhynchus mykiss				Fin Clip					
+765-001	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_001			Fin Clip				Deschutes River	
+765-002	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_002			Fin Clip				Deschutes River	
+765-003	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_003			Fin Clip				Deschutes River	
+765-004	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_004			Fin Clip				Deschutes River	
+765-005	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_005			Fin Clip				Deschutes River	
+765-006	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_006			Fin Clip				Deschutes River	
+765-007	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_007			Fin Clip				Deschutes River	
+765-008	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_008			Fin Clip				Deschutes River	
+765-009	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_009			Fin Clip				Deschutes River	
+765-010	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_010			Fin Clip				Deschutes River	
+765-011	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_011			Fin Clip				Deschutes River	
+765-012	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_012			Fin Clip				Deschutes River	
+765-013	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_013			Fin Clip				Deschutes River	
+765-014	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_014			Fin Clip				Deschutes River	
+765-015	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_015			Fin Clip				Deschutes River	
+765-016	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_016			Fin Clip				Deschutes River	
+765-017	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_017			Fin Clip				Deschutes River	
+765-018	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_018			Fin Clip				Deschutes River	
+765-019	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_019			Fin Clip				Deschutes River	
+765-020	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_020			Fin Clip				Deschutes River	
+765-021	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_021			Fin Clip				Deschutes River	
+765-022	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_022			Fin Clip				Deschutes River	
+765-023	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_023			Fin Clip				Deschutes River	
+765-024	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_024			Fin Clip				Deschutes River	
+765-025	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_025			Fin Clip				Deschutes River	
+765-026	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_026			Fin Clip				Deschutes River	
+765-027	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_027			Fin Clip				Deschutes River	
+765-028	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_028			Fin Clip				Deschutes River	
+765-029	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_029			Fin Clip				Deschutes River	
+765-030	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_030			Fin Clip				Deschutes River	
+765-031	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_031			Fin Clip				Deschutes River	
+765-032	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_032			Fin Clip				Deschutes River	
+765-033	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_033			Fin Clip				Deschutes River	
+765-034	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_034			Fin Clip				Deschutes River	
+765-035	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_035			Fin Clip				Deschutes River	
+765-036	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_036			Fin Clip				Deschutes River	
+765-037	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_037			Fin Clip				Deschutes River	
+765-038	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_038			Fin Clip				Deschutes River	
+765-039	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_039			Fin Clip				Deschutes River	
+765-040	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_040			Fin Clip				Deschutes River	
+765-041	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_041			Fin Clip				Deschutes River	
+765-042	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_042			Fin Clip				Deschutes River	
+765-043	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_043			Fin Clip				Deschutes River	
+765-044	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_044			Fin Clip				Deschutes River	
+765-045	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_045			Fin Clip				Deschutes River	
+765-046	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_046			Fin Clip				Deschutes River	
+765-047	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_047			Fin Clip				Deschutes River	
+765-048	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_048			Fin Clip				Deschutes River	
+765-049	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_049			Fin Clip				Deschutes River	
+765-050	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_050			Fin Clip				Deschutes River	
+765-051	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_051			Fin Clip				Deschutes River	
+765-052	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_052			Fin Clip				Deschutes River	
+765-053	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_053			Fin Clip				Deschutes River	
+765-054	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_054			Fin Clip				Deschutes River	
+765-055	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_055			Fin Clip				Deschutes River	
+765-056	765			Maupin Oregon; Oak Springs Hat.	Wise and Marx	2006		8/29/2006		Hatchery			Adult					Ethanol	20		Columbia River						Oncorhynchus mykiss	HAT(53)_056			Fin Clip				Deschutes River	
+1589-001	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	601	Roar0601		Fin Clip		Santiam River		Willamette River	
+1589-002	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	602	Roar0602		Fin Clip		Santiam River		Willamette River	
+1589-003	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	603	Roar0603		Fin Clip		Santiam River		Willamette River	
+1589-004	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	604	Roar0604		Fin Clip		Santiam River		Willamette River	
+1589-005	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	605	Roar0605		Fin Clip		Santiam River		Willamette River	
+1589-006	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	313	Roar0313		Fin Clip		Santiam River		Willamette River	
+1589-007	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	314	Roar0314		Fin Clip		Santiam River		Willamette River	
+1589-008	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	319	Roar0319		Fin Clip		Santiam River		Willamette River	
+1589-009	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	320	Roar0320		Fin Clip		Santiam River		Willamette River	
+1589-010	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	321	Roar0321		Fin Clip		Santiam River		Willamette River	
+1589-011	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	322	Roar0322		Fin Clip		Santiam River		Willamette River	
+1589-012	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	323	Roar0323		Fin Clip		Santiam River		Willamette River	
+1589-013	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	324	Roar0324		Fin Clip		Santiam River		Willamette River	
+1589-014	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	231	Roar0231		Fin Clip		Santiam River		Willamette River	
+1589-015	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	232	Roar0232		Fin Clip		Santiam River		Willamette River	
+1589-016	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	242	Roar0242		Fin Clip		Santiam River		Willamette River	
+1589-017	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	243	Roar0243		Fin Clip		Santiam River		Willamette River	
+1589-018	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	244	Roar0244		Fin Clip		Santiam River		Willamette River	
+1589-019	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	245	Roar0245		Fin Clip		Santiam River		Willamette River	
+1589-020	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	246	Roar0246		Fin Clip		Santiam River		Willamette River	
+1589-021	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	247	Roar0247		Fin Clip		Santiam River		Willamette River	
+1589-022	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	248	Roar0248		Fin Clip		Santiam River		Willamette River	
+1589-023	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	249	Roar0249		Fin Clip		Santiam River		Willamette River	
+1589-024	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	250	Roar0250		Fin Clip		Santiam River		Willamette River	
+1589-025	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	275	Roar0275		Fin Clip		Santiam River		Willamette River	
+1589-026	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	276	Roar0276		Fin Clip		Santiam River		Willamette River	
+1589-027	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	277	Roar0277		Fin Clip		Santiam River		Willamette River	
+1589-028	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	278	Roar0278		Fin Clip		Santiam River		Willamette River	
+1589-029	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	279	Roar0279		Fin Clip		Santiam River		Willamette River	
+1589-030	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	280	Roar0280		Fin Clip		Santiam River		Willamette River	
+1589-031	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	281	Roar0281		Fin Clip		Santiam River		Willamette River	
+1589-032	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	282	Roar0282		Fin Clip		Santiam River		Willamette River	
+1589-033	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	283	Roar0283		Fin Clip		Santiam River		Willamette River	
+1589-034	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	284	Roar0284		Fin Clip		Santiam River		Willamette River	
+1589-035	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	285	Roar0285		Fin Clip		Santiam River		Willamette River	
+1589-036	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	286	Roar0286		Fin Clip		Santiam River		Willamette River	
+1589-037	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	287	Roar0287		Fin Clip		Santiam River		Willamette River	
+1589-038	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	288	Roar0288		Fin Clip		Santiam River		Willamette River	
+1589-039	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	289	Roar0289		Fin Clip		Santiam River		Willamette River	
+1589-040	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	290	Roar0290		Fin Clip		Santiam River		Willamette River	
+1589-041	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	291	Roar0291		Fin Clip		Santiam River		Willamette River	
+1589-042	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	292	Roar0292		Fin Clip		Santiam River		Willamette River	
+1589-043	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	293	Roar0293		Fin Clip		Santiam River		Willamette River	
+1589-044	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	294	Roar0294		Fin Clip		Santiam River		Willamette River	
+1589-045	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	295	Roar0295		Fin Clip		Santiam River		Willamette River	
+1589-046	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	296	Roar0296		Fin Clip		Santiam River		Willamette River	
+1589-047	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	297	Roar0297		Fin Clip		Santiam River		Willamette River	
+1589-048	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	298	Roar0298		Fin Clip		Santiam River		Willamette River	
+1589-049	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	299	Roar0299		Fin Clip		Santiam River		Willamette River	
+1589-050	1589			Roaring River Hatchery Cape Cod Stock		2009		4/15/2009										Ethanol	56		Columbia River						Oncorhynchus mykiss	300	Roar0300		Fin Clip		Santiam River		Willamette River	
+2759-001	2759			Wizard Falls Fish Hatchery	Steve Starcerich; ODFW	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-002	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-003	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-004	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-005	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-006	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-007	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-008	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-009	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-010	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-011	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-012	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-013	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-014	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-015	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-016	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-017	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-018	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-019	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-020	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-021	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-022	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-023	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-024	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-025	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-026	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-027	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-028	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-029	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-030	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-031	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-032	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-033	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-034	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	
+2759-035	2759			Wizard Falls Fish Hatchery	Steve Starcerich; Oregon State University	2016	Crane Prairie Hatchery Stock	7/27/2016									Wizard Falls Fish Hatchery	Ethanol	102		Columbia River						Oncorhynchus mykiss				Fin Clip		Metolius River		Deschutes River	

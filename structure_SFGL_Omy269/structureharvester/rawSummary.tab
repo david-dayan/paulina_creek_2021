@@ -1,0 +1,95 @@
+# This document produced by structureHarvester core version vA.2 July 2014
+# http://www.structureharvester.com/
+# https://github.com/dentearl/structureHarvester/
+# http://taylor0.biology.ucla.edu/structureHarvester
+# http://users.soe.ucsc.edu/~dearl/software/structureHarvester
+# Written by Dent Earl, dearl (a) soe ucsc edu.
+# CITATION:
+# Earl, Dent A. and vonHoldt, Bridgett M. (2012)
+# STRUCTURE HARVESTER: a website and program for visualizing
+# STRUCTURE output and implementing the Evanno method.
+# Conservation Genetics Resources 4(2) 359-361. DOI: 10.1007/s12686-011-9548-7
+# Core version: vA.2 July 2014
+# File generated at 2022-Jan-21 14:41:37 PST
+#
+
+##########
+# K	Reps	mean est. LnP(Data)	stdev est. LnP(Data)
+1	10	-29588.550000	1.767138
+2	10	-27451.340000	2.168051
+3	10	-26908.710000	6.755977
+4	10	-26600.090000	6.187344
+5	10	-26539.790000	95.870045
+6	10	-26468.260000	181.582667
+
+##########
+# File name	Run #	K	Est. Ln prob. of data	Mean value of Ln likelihood	Variance of Ln likelihood
+5k10kadmcorr_run_4_f	4	1	-29589.7	-29526.2	127.1
+5k10kadmcorr_run_7_f	7	1	-29586.9	-29526.3	121.2
+5k10kadmcorr_run_2_f	2	1	-29589.1	-29526.1	126.0
+5k10kadmcorr_run_10_f	10	1	-29588.7	-29526.2	125.1
+5k10kadmcorr_run_6_f	6	1	-29588.2	-29526.0	124.5
+5k10kadmcorr_run_3_f	3	1	-29588.2	-29526.2	124.0
+5k10kadmcorr_run_1_f	1	1	-29586.0	-29525.9	120.2
+5k10kadmcorr_run_8_f	8	1	-29587.4	-29526.2	122.4
+5k10kadmcorr_run_9_f	9	1	-29588.8	-29526.1	125.3
+5k10kadmcorr_run_5_f	5	1	-29592.5	-29526.2	132.7
+5k10kadmcorr_run_11_f	11	2	-27450.3	-27309.3	282.0
+5k10kadmcorr_run_15_f	15	2	-27452.0	-27309.1	285.9
+5k10kadmcorr_run_13_f	13	2	-27450.3	-27309.4	281.9
+5k10kadmcorr_run_16_f	16	2	-27451.0	-27309.1	283.8
+5k10kadmcorr_run_19_f	19	2	-27452.9	-27310.0	285.8
+5k10kadmcorr_run_20_f	20	2	-27454.1	-27309.6	289.0
+5k10kadmcorr_run_12_f	12	2	-27454.4	-27309.9	289.0
+5k10kadmcorr_run_18_f	18	2	-27448.1	-27308.8	278.5
+5k10kadmcorr_run_14_f	14	2	-27452.0	-27309.4	285.2
+5k10kadmcorr_run_17_f	17	2	-27448.3	-27308.7	279.1
+5k10kadmcorr_run_28_f	28	3	-26911.0	-26694.4	433.3
+5k10kadmcorr_run_23_f	23	3	-26908.9	-26690.1	437.6
+5k10kadmcorr_run_25_f	25	3	-26912.0	-26691.9	440.1
+5k10kadmcorr_run_27_f	27	3	-26919.8	-26693.3	453.0
+5k10kadmcorr_run_22_f	22	3	-26915.7	-26694.0	443.3
+5k10kadmcorr_run_30_f	30	3	-26902.6	-26691.0	423.2
+5k10kadmcorr_run_21_f	21	3	-26903.1	-26689.5	427.2
+5k10kadmcorr_run_26_f	26	3	-26911.4	-26694.8	433.1
+5k10kadmcorr_run_29_f	29	3	-26897.0	-26693.6	406.8
+5k10kadmcorr_run_24_f	24	3	-26905.6	-26691.6	427.9
+5k10kadmcorr_run_37_f	37	4	-26595.5	-26330.2	530.5
+5k10kadmcorr_run_31_f	31	4	-26592.5	-26330.1	524.7
+5k10kadmcorr_run_32_f	32	4	-26593.5	-26333.3	520.5
+5k10kadmcorr_run_39_f	39	4	-26608.7	-26331.8	553.9
+5k10kadmcorr_run_38_f	38	4	-26598.9	-26332.2	533.5
+5k10kadmcorr_run_36_f	36	4	-26605.4	-26333.3	544.2
+5k10kadmcorr_run_34_f	34	4	-26609.1	-26332.5	553.2
+5k10kadmcorr_run_35_f	35	4	-26602.3	-26331.7	541.3
+5k10kadmcorr_run_33_f	33	4	-26600.6	-26331.7	537.8
+5k10kadmcorr_run_40_f	40	4	-26594.4	-26331.4	526.1
+5k10kadmcorr_run_43_f	43	5	-26494.6	-26150.3	688.7
+5k10kadmcorr_run_45_f	45	5	-26506.9	-26142.3	729.2
+5k10kadmcorr_run_41_f	41	5	-26517.9	-26148.7	738.4
+5k10kadmcorr_run_42_f	42	5	-26804.0	-26163.1	1281.7
+5k10kadmcorr_run_44_f	44	5	-26507.5	-26145.8	723.4
+5k10kadmcorr_run_48_f	48	5	-26574.7	-26250.2	649.0
+5k10kadmcorr_run_47_f	47	5	-26495.9	-26143.9	704.0
+5k10kadmcorr_run_50_f	50	5	-26492.1	-26149.4	685.3
+5k10kadmcorr_run_49_f	49	5	-26504.8	-26144.6	720.4
+5k10kadmcorr_run_46_f	46	5	-26499.5	-26144.5	710.0
+5k10kadmcorr_run_52_f	52	6	-26413.3	-25979.7	867.2
+5k10kadmcorr_run_58_f	58	6	-26356.0	-25954.7	802.5
+5k10kadmcorr_run_51_f	51	6	-26497.2	-25981.9	1030.7
+5k10kadmcorr_run_57_f	57	6	-26372.5	-25958.5	828.0
+5k10kadmcorr_run_59_f	59	6	-26366.5	-25954.2	824.8
+5k10kadmcorr_run_54_f	54	6	-26374.9	-25955.1	839.6
+5k10kadmcorr_run_56_f	56	6	-26611.9	-25976.0	1271.8
+5k10kadmcorr_run_60_f	60	6	-26932.4	-25980.9	1902.9
+5k10kadmcorr_run_53_f	53	6	-26383.3	-25955.3	856.0
+5k10kadmcorr_run_55_f	55	6	-26374.6	-25958.5	832.1
+
+Software written by Dent Earl while at EEB Dept, UCLA, BME Dept UCSC
+dearl (a) soe ucsc edu
+CITATION:
+Earl, Dent A. and vonHoldt, Bridgett M. (2012)
+STRUCTURE HARVESTER: a website and program for visualizing
+STRUCTURE output and implementing the Evanno method.
+# Conservation Genetics Resources 4(2) 359-361. DOI: 10.1007/s12686-011-9548-7
+Core version: vA.2 July 2014
